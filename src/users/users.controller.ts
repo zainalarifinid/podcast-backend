@@ -1,32 +1,25 @@
 import { Controller, Get, Post, Body, Query, Put, Param, Delete, Res, HttpStatus } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-// import { UserService } from "./user.service";
+// import { CreateUserDto } from './dto/create-user.dto';
+import { User } from "./dto/user.entity";
+import { UserDto } from "./dto/user.dto";
+import { UserService } from "./user.service";
 import { Response } from 'express';
 
 @Controller('users')
 export class UsersController {
 
+    constructor(private userService: UserService){}
+
     @Post()
-    async create(@Body() createUserDto: CreateUserDto ){
+    async create(@Body() user: User ){
 
-        return "Success Create User";
+        return this.userService.create(user);
     }
-
-    /* @Post()
-    async create(@Body() createUserDto: CreateUserDto, @Res() res: Response ){
-
-        res.status(HttpStatus.CREATED).send();
-    } */
 
     @Get()
-    findAll(): string{
-        return "Default GET for User Controller";
+    index(): Promise<User[]>{
+        return this.userService.findAll();
     }
-
-    // @Get()
-    // findAll(@Query() query: ListAllEntities) {
-    //     return `This action returns all cats (limit: ${query.limit} items)`;
-    // }
 
     @Get(':id')
     findOne(@Param('id') id: string) {
