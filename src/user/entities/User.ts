@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger';
-import { PodcastEntity } from '../../podcast/entities/Podcast';
+import { Podcast } from '../../podcast/entities/Podcast';
 
 @Entity()
 export class User{
@@ -15,7 +15,7 @@ export class User{
     @Column({length: 150})
     username: string;
 
-    @OneToMany( type => PodcastEntity, podcast => podcast.user)
-    podcasts: PodcastEntity[]
+    @OneToMany( type => Podcast, podcast => podcast.user)
+    podcasts: Podcast[]
 
 }

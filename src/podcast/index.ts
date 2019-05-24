@@ -5,14 +5,14 @@ import { PodcastsService } from './services/PodcastService';
 import { DatabaseModule } from '../database';
 import { podcastProvider } from './providers/PodcastProvider';
 
-import { PodcastEntity } from "./entities/Podcast";
+import { Podcast } from "./entities/Podcast";
 import { User } from "../user/entities/User";
 
 @Module({
-  imports: [ DatabaseModule ],
+  imports: [ TypeOrmModule.forFeature([Podcast, User]), DatabaseModule ],
   controllers: [PodcastController],
   providers: [
-      ...podcastProvider,
+      // ...podcastProvider,
       PodcastsService,
   ]
 })

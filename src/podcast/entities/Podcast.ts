@@ -2,8 +2,8 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 import { ApiModelProperty } from "@nestjs/swagger";
 import { User } from "../../user/entities/User";
 
-@Entity('podcast')
-export class PodcastEntity{
+@Entity()
+export class Podcast{
     @PrimaryGeneratedColumn()
     id: number;
 
