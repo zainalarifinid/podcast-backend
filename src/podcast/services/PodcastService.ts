@@ -8,9 +8,9 @@ import { User } from "../../user/entities/User";
 export class PodcastsService {
 
     constructor(
-        @InjectRepository(Podcast)
+        @Inject('PODCAST_REPOSITORY')
         private readonly podcastRepository: Repository<Podcast>,
-        @InjectRepository(User)
+        @Inject('USER_REPOSITORY')
         private readonly userRepository: Repository<User>,
     ) {}
 
