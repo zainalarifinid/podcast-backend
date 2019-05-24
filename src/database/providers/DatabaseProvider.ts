@@ -7,7 +7,7 @@ export const databaseProviders = [
             type: 'sqlite',
             database: 'db',
             entities: [
-                __dirname + '/../**/entities/**{.ts,.js}',
+                __dirname + '/../../**/entities/**{.ts,.js}',
             ],
             // logging: ['query', 'schema'],
             synchronize: true,

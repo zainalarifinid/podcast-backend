@@ -3,7 +3,7 @@ import { PodcastsService } from '../services/PodcastService';
 import { Podcast } from '../entities/Podcast';
 
 @Controller('podcasts')
-export class PodcastsController {
+export class PodcastController {
 
     constructor(private podcastService: PodcastsService){}
 
