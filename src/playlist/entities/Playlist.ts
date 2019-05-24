@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from "typeorm";
 import { ApiModelProperty } from "@nestjs/swagger";
+import { PodcastEntity } from "../../podcast/entities/Podcast";
 
 @Entity()
 export class Playlist{
@@ -10,5 +11,9 @@ export class Playlist{
     @ApiModelProperty()
     @Column()
     title: string;
+
+    @ManyToMany( type => PodcastEntity)
+    @JoinTable()
+    podcast: PodcastEntity[];
 
 }

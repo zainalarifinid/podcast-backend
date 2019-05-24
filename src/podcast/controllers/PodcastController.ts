@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { PodcastsService } from '../services/PodcastService';
-import { Podcast } from '../entities/Podcast';
+import { PodcastEntity } from '../entities/Podcast';
 
 @Controller('podcasts')
 export class PodcastController {
@@ -8,17 +8,17 @@ export class PodcastController {
     constructor(private podcastService: PodcastsService){}
 
     @Post()
-    async create(@Body() podcast: Podcast){
-        return this.podcastService.create(podcast);
+    async create(@Param('id') id: number, @Body() podcast: PodcastEntity){
+        return this.podcastService.create(id, podcast);
     }
 
     @Get()
-    index(): Promise<Podcast[]>{
+    index(): Promise<PodcastEntity[]>{
         return this.podcastService.findAll();
     }
 
     @Put(':id')
-    async update(@Param('id') id: number, @Body() podcast: Podcast): Promise<any>{
+    async update(@Param('id') id: number, @Body() podcast: PodcastEntity): Promise<any>{
         return this.podcastService.update(id, podcast);
     }
 

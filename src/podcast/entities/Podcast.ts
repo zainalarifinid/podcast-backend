@@ -1,14 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 import { ApiModelProperty } from "@nestjs/swagger";
+import { User } from "../../user/entities/User";
 
-@Entity()
-export class Podcast{
+@Entity('podcast')
+export class PodcastEntity{
     @PrimaryGeneratedColumn()
     id: number;
-
-    @ApiModelProperty()
-    @Column()
-    user: number;
 
     @ApiModelProperty()
     @Column()
@@ -25,5 +22,9 @@ export class Podcast{
     @ApiModelProperty()
     @Column()
     youtubeLink: string;
+
+    @ApiModelProperty()
+    @ManyToOne(type => User, user => user.podcasts )
+    user: User;
 
 }

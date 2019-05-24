@@ -1,10 +1,10 @@
 import { Connection } from "typeorm";
-import { Podcast } from "../entities/Podcast";
+import { PodcastEntity } from "../entities/Podcast";
 
 export const podcastProvider = [
     {
         provide: 'PODCAST_REPOSITORY',
-        useFactory: (connection: Connection) => connection.getRepository(Podcast),
+        useFactory: (connection: Connection) => connection.getRepository(PodcastEntity),
         inject: ['DATABASE_CONNECTION']
     }
 ]
