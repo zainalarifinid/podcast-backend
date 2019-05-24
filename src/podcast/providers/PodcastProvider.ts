@@ -1,5 +1,5 @@
 import { Connection } from "typeorm";
-import { Podcast } from "./podcast.entity";
+import { Podcast } from "../entities/Podcast";
 
 export const podcastProvider = [
     {

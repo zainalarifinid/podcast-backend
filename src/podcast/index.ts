@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { PodcastsController } from './podcasts.controller';
-import { PodcastsService } from './podcasts.service';
+import { PodcastsController } from './controllers/PodcastController';
+import { PodcastsService } from './services/PodcastService';
 import { DatabaseModule } from '../database/database.module';
-import { podcastProvider } from './podcast.providers';
+import { podcastProvider } from './providers/PodcastProvider';
 
 @Module({
   imports: [ DatabaseModule ],

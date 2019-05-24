@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
-import { PodcastsService } from './podcasts.service';
-import { Podcast } from './podcast.entity';
+import { PodcastsService } from '../services/PodcastService';
+import { Podcast } from '../entities/Podcast';
 
 @Controller('podcasts')
 export class PodcastsController {

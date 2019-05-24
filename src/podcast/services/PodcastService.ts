@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Repository, DeleteResult, UpdateResult } from "typeorm";
-import { Podcast } from "./podcast.entity";
+import { Podcast } from "../entities/Podcast";
 
 @Injectable()
 export class PodcastsService {
