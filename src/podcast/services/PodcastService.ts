@@ -24,6 +24,7 @@ export class PodcastsService {
         entryPodcast.title = podcast.title;
         entryPodcast.duration = podcast.duration;
         entryPodcast.description = podcast.description;
+        entryPodcast.youtubeLink = podcast.youtubeLink;
 
         const newPodcast = await this.podcastRepository.save(entryPodcast);
         const user = await this.userRepository.findOne(id);
