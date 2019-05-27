@@ -3,6 +3,7 @@ import { Repository } from "typeorm";
 import { Follow } from "../entities/Follow";
 import { User } from "../../user/entities/User";
 import { ProfileRO, ProfileData } from "../interfaces/FollowInterface";
+import { followProvider } from "../providers/FollowProvider";
 
 @Injectable()
 export class ProfileService{
@@ -17,8 +18,6 @@ export class ProfileService{
         //get profile
         const userFollower = await this.userRepository.findOne({username: usernameFollower});
         const userFollowing = await this.userRepository.findOne({username: usernameFollowing});
-        console.log(usernameFollower, usernameFollowing);
-        console.log(userFollower, userFollowing);
         if(!userFollower || !userFollowing){
             throw new HttpException('account not found', HttpStatus.BAD_REQUEST);
         }
@@ -29,14 +28,9 @@ export class ProfileService{
         //merge data profile and following stat
         let profile: ProfileData = {
             username: usernameFollowing,
-            podcasts: userFollowing.podcasts
+            podcasts: userFollowing.podcasts,
+            following: !!checkFollowing
         };
-
-        if(!checkFollowing){
-            profile.following = !!checkFollowing;
-        }
-
-        console.log(profile);
 
         //return the data
         return {profile}; 
