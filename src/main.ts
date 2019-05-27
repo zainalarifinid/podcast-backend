@@ -9,7 +9,6 @@ async function bootstrap() {
     .setTitle('User Podcast')
     .setDescription('Create user for using podcast application')
     .setVersion('1.0')
-    .addTag('users')
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
