@@ -1,4 +1,4 @@
-import { Injectable, Inject } from "@nestjs/common";
+import { Injectable, Inject, HttpException, HttpStatus } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { User } from "../entities/User";
 
@@ -14,6 +14,12 @@ export class UserService{
     }
 
     async create(user: User): Promise<User> {
+        if(user.email.length == 0){
+            throw new HttpException('Email is required', HttpStatus.BAD_REQUEST);            
+        }
+        if(user.username.length == 0){
+            throw new HttpException('Username is required', HttpStatus.BAD_REQUEST);            
+        }
         return await this.userRepository.save(user);
     }
 
