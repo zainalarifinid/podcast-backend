@@ -45,4 +45,22 @@ export class PlaylistController {
         return this.playlistService.delete(id);
     }
 
+    @Post(':id/add-playlist/:idPodcast')
+    @ApiOperation({
+        title: 'Add Podcast to Playlist',
+        description: 'The API to add podcast to playlist'
+    })
+    async addPlayList(@Param('id') id: number, @Param('idPodcast') idPodcast: number): Promise<Playlist>{
+        return this.playlistService.addPlayList(id, idPodcast);
+    }
+
+    @Post(':id/remove-playlist/:idPodcast')
+    @ApiOperation({
+        title: 'Remove Podcast to Playlist',
+        description: 'The API to remove podcast from playlist'
+    })
+    async removePlaylist(@Param('id') id: number, @Param('idPodcast') idPodcast: number): Promise<Playlist>{
+        return this.playlistService.removePlaylist(id, idPodcast);
+    }
+
 }

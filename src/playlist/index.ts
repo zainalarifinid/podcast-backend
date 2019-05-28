@@ -3,9 +3,10 @@ import { DatabaseModule } from "../database";
 import { PlaylistController } from "./controllers/PlaylistController";
 import { PlaylistService } from "./services/PlaylistService";
 import { playlistProvider } from "./providers/PlaylistProvider";
+import { PodcastsModule } from "../podcast";
 
 @Module({
-    imports: [ DatabaseModule ],
+    imports: [ DatabaseModule, PodcastsModule ],
     controllers: [PlaylistController],
     providers: [
         ...playlistProvider,

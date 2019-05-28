@@ -10,8 +10,9 @@ import { UsersModule } from '../user';
   imports: [ DatabaseModule, UsersModule ],
   controllers: [PodcastController],
   providers: [
-      ...podcastProvider,
+      podcastProvider,
       PodcastsService,
-  ]
+  ],
+  exports: [ podcastProvider ]
 })
 export class PodcastsModule {}

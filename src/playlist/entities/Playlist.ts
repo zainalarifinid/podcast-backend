@@ -14,6 +14,6 @@ export class Playlist{
 
     @ManyToMany( type => Podcast)
     @JoinTable()
-    podcast: Podcast[];
+    podcasts: Podcast[];
 
 }
