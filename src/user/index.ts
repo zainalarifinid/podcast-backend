@@ -3,17 +3,29 @@ import { DatabaseModule } from "../database";
 import { userProvider } from "./providers/UserProvider";
 import { UsersController } from "./controllers/UserController";
 import { UserService } from "./services/UserService";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { User } from "./entities/User";
+import { UserRepository } from "./repositories";
+
+const userServiceProvider = {
+    provide: 'PodcastApp.UserService',
+    useClass: UserService,
+};
 
 @Module({
-    imports: [ DatabaseModule ],
     controllers: [ UsersController ],
-    providers: [
-        userProvider,
-        UserService,
-    ],
-    exports: [
-        userProvider,
-    ],
+    imports: [ TypeOrmModule.forFeature([User, UserRepository]) ],
+    providers: [ userServiceProvider ],
+    exports: [ userServiceProvider ]
+    // imports: [ DatabaseModule ],
+    // controllers: [ UsersController ],
+    // providers: [
+    //     userProvider,
+    //     UserService,
+    // ],
+    // exports: [
+    //     userProvider,
+    // ],
 })
 
 export class UsersModule {}

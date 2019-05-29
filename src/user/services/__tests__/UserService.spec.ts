@@ -2,15 +2,16 @@ import { UserService } from "../UserService";
 import { User } from "../../entities/User";
 import { Repository } from "typeorm";
 import { HttpException } from "@nestjs/common";
+import { UserRepository } from "../../repositories";
 
-// jest.mock('../../entities')
+jest.mock('../../repositories')
 describe('UserService', () => {
     let userService: UserService;
-    let userRepository: Repository<User>;
+    let userRepositoryMock: jest.Mocked<UserRepository>;
 
     beforeEach(()=>{
-        userRepository = new Repository<User>();
-        userService = new UserService(userRepository);
+        userRepositoryMock = new UserRepository() as jest.Mocked<UserRepository>;
+        userService = new UserService(userRepositoryMock);
     });
 
     describe('create', () => {
@@ -34,26 +35,26 @@ describe('UserService', () => {
 
             }
         });
-        // it('Should reject with HttpException if "email" given exist email', async(done) => {
+        it('Should reject with HttpException if "email" given exist email', async(done) => {
 
-        //     const exampleDataUser = new User();
-        //     exampleDataUser.email = "zainal1@online-pajak.com";
-        //     exampleDataUser.username = "zainal1";
+            const exampleDataUser = new User();
+            exampleDataUser.email = "zainal1@online-pajak.com";
+            exampleDataUser.username = "zainal1";
 
-        //     try{
+            try{
 
-        //         await userService.create(exampleDataUser);
-        //         done("should have thrown HttpException");
+                await userService.create(exampleDataUser);
+                done("should have thrown HttpException");
 
-        //     } catch(err){
+            } catch(err){
 
-        //         expect(err).toBeInstanceOf(HttpException);
-        //         expect(err.message).toBe('Email is Exist');
-        //         // console.log(err);
-        //         done();
+                expect(err).toBeInstanceOf(HttpException);
+                expect(err.message).toBe('Email is Exist');
+                // console.log(err);
+                done();
 
-        //     }
-        // });
+            }
+        });
         it('Should reject with HttpException if "username" given empty string ', async(done) => {
 
             const exampleDataUser = new User();
