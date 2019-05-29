@@ -28,9 +28,6 @@ export class UserService{
 
         const checkEmail = await this.userRepository.findOne({email: user.email});
         const checkUsername = await this.userRepository.findOne({username: user.username});
-        // const dummyData = await this.userRepository.findOne(1);
-        // const dummyData2 = await this.userRepository.findOne(2);
-        console.log(this.userRepository, checkEmail, checkUsername);
         if(!!checkEmail && typeof(checkEmail) != 'undefined'){
             throw new HttpException('Email is exist', HttpStatus.BAD_REQUEST);
         }
