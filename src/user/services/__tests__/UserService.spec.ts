@@ -14,12 +14,14 @@ describe('UserService', () => {
         userService = new UserService(userRepositoryMock);
     });
 
+    const exampleDataUser = new User();
+    exampleDataUser.email = "zainal1@online-pajak.com";
+    exampleDataUser.username = "zainal1";
+
     describe('create', () => {
         it('Should reject with HttpException if "email" given empty string ', async(done) => {
 
-            const exampleDataUser = new User();
             exampleDataUser.email = "";
-            exampleDataUser.username = "zainal3";
 
             try{
 
@@ -37,9 +39,7 @@ describe('UserService', () => {
         });
         it('Should reject with HttpException if "email" given exist email', async(done) => {
 
-            const exampleDataUser = new User();
             exampleDataUser.email = "zainal1@online-pajak.com";
-            exampleDataUser.username = "zainal1";
 
             userRepositoryMock.findOne.mockResolvedValueOnce(exampleDataUser as any);
 
@@ -61,8 +61,6 @@ describe('UserService', () => {
         });
         it('Should reject with HttpException if "username" given empty string ', async(done) => {
 
-            const exampleDataUser = new User();
-            exampleDataUser.email = "zainal3@online-pajak.com";
             exampleDataUser.username = "";
 
             try{
@@ -81,8 +79,6 @@ describe('UserService', () => {
         });
         it('Should reject with HttpException if "username" given exist username', async(done) => {
 
-            const exampleDataUser = new User();
-            exampleDataUser.email = "zainal1@online-pajak.com";
             exampleDataUser.username = "zainal1";
 
             userRepositoryMock.findOne.mockResolvedValueOnce(null);
@@ -105,10 +101,8 @@ describe('UserService', () => {
             }
         });
         it('Should reject with HttpException if "email" given wrong format email ', async(done) => {
-
-            const exampleDataUser = new User();
+            
             exampleDataUser.email = "zainal3@online-pajakcom";
-            exampleDataUser.username = "zainal3";
 
             try{
 

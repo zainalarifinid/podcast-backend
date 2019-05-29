@@ -1,11 +1,12 @@
-import { Injectable, Inject, HttpException, HttpStatus } from "@nestjs/common";
+import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { User } from "../entities/User";
+import { InjectRepository } from "@nestjs/typeorm";
 
 @Injectable()
 export class UserService{
     constructor(
-        @Inject('USER_REPOSITORY')
+        @InjectRepository(User)
         private readonly userRepository: Repository<User>,
     ) {}
 

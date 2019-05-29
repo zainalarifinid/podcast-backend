@@ -1,16 +1,16 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, DeleteResult, UpdateResult } from "typeorm";
 import { Podcast } from "../entities/Podcast";
 import { User } from "../../user/entities/User";
 
 @Injectable()
-export class PodcastsService {
+export class PodcastService {
 
     constructor(
-        @Inject('PODCAST_REPOSITORY')
+        @InjectRepository(Podcast)
         private readonly podcastRepository: Repository<Podcast>,
-        @Inject('USER_REPOSITORY')
+        @InjectRepository(User)
         private readonly userRepository: Repository<User>,
     ) {}
 
@@ -20,8 +20,26 @@ export class PodcastsService {
 
     async create(id: number, podcast: Podcast): Promise<Podcast> {
         
+        if(podcast.duration.length == 0){
+            throw new HttpException('Duration is required', HttpStatus.BAD_REQUEST);                        
+        }
+        var durationFormat = /[0-9]{2}m[0-9]{2}s/;
+        if(!durationFormat.test(podcast.duration)){
+            throw new HttpException("Duration format is invalid", HttpStatus.BAD_REQUEST);
+        }
+
+        if(podcast.youtubeLink.length == 0){
+            throw new HttpException('Link Youtube is required', HttpStatus.BAD_REQUEST);
+        }
+
+        var youtubeLinkFormat = /^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/;
+
+        if(!youtubeLinkFormat.test(podcast.youtubeLink)){
+            throw new HttpException('Link Youtube have invalid format', HttpStatus.BAD_REQUEST);
+        }
+
         let entryPodcast = new Podcast();
-        entryPodcast.title = podcast.title;
+        entryPodcast.title = (podcast.title.length == 0)? "Untitled" : podcast.title;
         entryPodcast.duration = podcast.duration;
         entryPodcast.description = podcast.description;
         entryPodcast.youtubeLink = podcast.youtubeLink;
