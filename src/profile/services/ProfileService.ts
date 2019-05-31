@@ -1,24 +1,25 @@
 import { Injectable, Inject, HttpException, HttpStatus } from "@nestjs/common";
-import { Repository } from "typeorm";
 import { Follow } from "../entities/Follow";
 import { User } from "../../user/entities/User";
 import { ProfileRO, ProfileData } from "../interfaces/FollowInterface";
-import { followProvider } from "../providers/FollowProvider";
+import { InjectRepository } from "@nestjs/typeorm";
+import { FollowRepository } from "../repositories/FollowRepositories";
+import { UserRepository } from "../../user/repositories";
 
 @Injectable()
 export class ProfileService{
     constructor(
-        @Inject('FOLLOW_REPOSITORY')
-        private readonly followRepository: Repository<Follow>,
-        @Inject('USER_REPOSITORY')
-        private readonly userRepository: Repository<User>
+        @InjectRepository(Follow)
+        private readonly followRepository: FollowRepository,
+        @InjectRepository(User)
+        private readonly userRepository: UserRepository
     ){}
 
     async getProfile(usernameFollower: string, usernameFollowing: string): Promise<ProfileRO>{
         //get profile
         const userFollower = await this.userRepository.findOne({username: usernameFollower});
         const userFollowing = await this.userRepository.findOne({username: usernameFollowing});
-        if(!userFollower || !userFollowing){
+        if(!!userFollowing == false){
             throw new HttpException('account not found', HttpStatus.BAD_REQUEST);
         }
 
@@ -51,6 +52,9 @@ export class ProfileService{
 
         //get data user following
         const userFollowing = await this.userRepository.findOne({username: usernameFollowing});
+        if(!!userFollowing == false){
+            throw new HttpException('account not found', HttpStatus.BAD_REQUEST);
+        }
         
         //make relation follower
         let isFollowing = await this.followRepository.findOne({followerId: userFollower.id, FollowingId: userFollowing.id });
@@ -84,6 +88,9 @@ export class ProfileService{
         const userFollowing = await this.userRepository.findOne({username: usernameFollower});
 
         const userUnfollowing = await this.userRepository.findOne({username: usernameUnfollowing});
+        if(!!userUnfollowing == false){
+            throw new HttpException('account not found', HttpStatus.BAD_REQUEST);
+        }
 
         await this.followRepository.delete({followerId: userFollowing.id, FollowingId: userUnfollowing.id});
 
