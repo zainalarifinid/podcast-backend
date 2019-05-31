@@ -18,7 +18,7 @@ describe('PodcastService', () => {
         podcastService = new PodcastService(podcastRepositoryMock, userRepositoryMock);
     });
 
-    describe('create', () => {
+    describe('create podcast', () => {
 
         const exampleDataPodcast = new Podcast();
         exampleDataPodcast.title = "Learn Japanese Pod Podcast 01";
@@ -117,6 +117,74 @@ describe('PodcastService', () => {
             } catch(err){
                 expect(err).toBeInstanceOf(HttpException);
                 expect(err.message).toBe("Link Youtube have invalid format");
+                done();
+            }
+
+        });
+
+    });
+
+    describe('update podcast', () => {
+
+        const exampleDataPodcast = new Podcast();
+        exampleDataPodcast.title = "Learn Japanese Pod Podcast 01";
+        exampleDataPodcast.description = "Easy learning Japanese.";
+        exampleDataPodcast.duration = "23m52s";
+        exampleDataPodcast.youtubeLink = "https://www.youtube.com/watch?v=siBMCOm83ko";
+        let idUser: number = 1;
+
+        const exampleDataUser = new User();
+        exampleDataUser.email = "zainal1@online-pajak.com";
+        exampleDataUser.username = "zainal1";
+        exampleDataUser.podcasts = [ exampleDataPodcast ];
+
+        let idPodcast: number = 1;
+
+        it('Should reject with HttpException if idPodcast given not exist Podcast', async(done)=>{
+
+            podcastRepositoryMock.findOne.mockResolvedValueOnce( null );
+
+            try{
+                await podcastService.update(idPodcast, exampleDataPodcast);
+                done("should have thrown HttpException");
+            } catch(err){
+                expect(podcastRepositoryMock.findOne).toHaveBeenCalledWith(idPodcast);
+                expect(err).toBeInstanceOf(HttpException);
+                expect(err.message).toBe('Podcast doesn\'t exist');
+                done();
+            }
+
+        });
+
+    });
+    
+    describe('delete podcast', () => {
+
+        const exampleDataPodcast = new Podcast();
+        exampleDataPodcast.title = "Learn Japanese Pod Podcast 01";
+        exampleDataPodcast.description = "Easy learning Japanese.";
+        exampleDataPodcast.duration = "23m52s";
+        exampleDataPodcast.youtubeLink = "https://www.youtube.com/watch?v=siBMCOm83ko";
+        let idUser: number = 1;
+
+        const exampleDataUser = new User();
+        exampleDataUser.email = "zainal1@online-pajak.com";
+        exampleDataUser.username = "zainal1";
+        exampleDataUser.podcasts = [ exampleDataPodcast ];
+
+        let idPodcast: number = 1;
+
+        it('Should reject with HttpException if idPodcast given not exist Podcast', async(done)=>{
+
+            podcastRepositoryMock.findOne.mockResolvedValueOnce( null );
+
+            try{
+                await podcastService.update(idPodcast, exampleDataPodcast);
+                done("should have thrown HttpException");
+            } catch(err){
+                expect(podcastRepositoryMock.findOne).toHaveBeenCalledWith(idPodcast);
+                expect(err).toBeInstanceOf(HttpException);
+                expect(err.message).toBe('Podcast doesn\'t exist');
                 done();
             }
 

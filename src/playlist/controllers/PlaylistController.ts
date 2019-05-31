@@ -9,13 +9,13 @@ export class PlaylistController {
 
     constructor(private playlistService: PlaylistService ){}
 
-    @Post()
+    @Post(':id')
     @ApiOperation({
         title: 'Create Playlist',
         description: 'The API to create playlist'
     })
-    async create(@Body() podcast: Playlist){
-        return this.playlistService.create(podcast);
+    async create(@Param("id") idUser: number, @Body() podcast: Playlist){
+        return this.playlistService.create(idUser, podcast);
     }
 
     @Get()

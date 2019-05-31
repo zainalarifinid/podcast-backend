@@ -1,17 +1,19 @@
-import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository, DeleteResult, UpdateResult } from "typeorm";
+import { DeleteResult, UpdateResult } from "typeorm";
 import { Podcast } from "../entities/Podcast";
 import { User } from "../../user/entities/User";
+import { PodcastRepository } from '../repositories';
+import { UserRepository } from '../../user/repositories';
 
 @Injectable()
 export class PodcastService {
 
     constructor(
         @InjectRepository(Podcast)
-        private readonly podcastRepository: Repository<Podcast>,
+        private readonly podcastRepository: PodcastRepository,
         @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
+        private readonly userRepository: UserRepository,
     ) {}
 
     async findAll(): Promise<Podcast[]> {
@@ -61,10 +63,24 @@ export class PodcastService {
     }
 
     async update(id, podcast: Podcast): Promise<UpdateResult> {
+
+        const dataPodcast  = await this.podcastRepository.findOne(id);
+        if(!!dataPodcast == false){
+            // console.log("throw new HttpException");
+            throw new HttpException('Podcast doesn\'t exist', HttpStatus.BAD_REQUEST);
+        }
+
         return await this.podcastRepository.update(id, podcast);
     }
 
     async delete( id ): Promise<DeleteResult> {
+
+        const dataPodcast  = await this.podcastRepository.findOne(id);
+        if(!!dataPodcast == false){
+            // console.log("throw new HttpException");
+            throw new HttpException('Podcast doesn\'t exist', HttpStatus.BAD_REQUEST);
+        }
+
         return await this.podcastRepository.delete(parseInt(id));
     }
 
