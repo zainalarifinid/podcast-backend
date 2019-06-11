@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Inject } from '@nestjs/common';
 import { PlaylistService } from "../services/PlaylistService";
 import { Playlist } from "../entities/Playlist";
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
@@ -7,7 +7,10 @@ import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 @Controller('/api/v1/playlists')
 export class PlaylistController {
 
-    constructor(private playlistService: PlaylistService ){}
+    constructor(
+        @Inject("PodcastApp.PlaylistService")
+        private playlistService: PlaylistService 
+    ){}
 
     @Post(':id')
     @ApiOperation({

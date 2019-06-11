@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Inject } from '@nestjs/common';
 import { User } from "../entities/User";
 import { UserService } from "../services/UserService";
 import { ApiOperation, ApiUseTags } from '@nestjs/swagger';
@@ -7,7 +7,10 @@ import { ApiOperation, ApiUseTags } from '@nestjs/swagger';
 @Controller('/api/v1/users')
 export class UsersController {
 
-    constructor(private userService: UserService){}
+    constructor(
+        @Inject("PodcastApp.UserService")
+        private userService: UserService
+    ){}
 
     @Post()
     @ApiOperation({

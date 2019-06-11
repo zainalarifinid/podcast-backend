@@ -8,7 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   imports: [UsersModule, PodcastsModule, PlaylistModule, ProfileModule, TypeOrmModule.forRoot({
     type: 'sqlite',
-    database: 'db',
+    database: process.env.NODE_ENV === 'test' ? ':memory:' : 'db',
     entities: [
         __dirname + '/../../**/entities/**{.ts,.js}',
     ],

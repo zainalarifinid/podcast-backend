@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
-import { PodcastsService } from '../services/PodcastService';
+import { Controller, Get, Post, Put, Delete, Body, Param, Inject } from '@nestjs/common';
+import { PodcastService } from '../services/PodcastService';
 import { Podcast } from '../entities/Podcast';
 import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 
@@ -7,7 +7,10 @@ import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
 @Controller('/api/v1/podcasts')
 export class PodcastController {
 
-    constructor(private podcastService: PodcastsService){}
+    constructor(
+        @Inject('PodcastApp.PodcastService')
+        private podcastService: PodcastService
+    ){}
 
     @Post()
     @ApiOperation({

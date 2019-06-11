@@ -1,23 +1,57 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
+import { TestingModule, Test } from "@nestjs/testing";
+import { UsersModule } from "../src/user";
+import { UserService } from "../src/user/services/UserService";
+import { INestApplication } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../src/appModule';
 
-describe('AppController (e2e)', () => {
-  let app;
+const userServiceProvider = {
+    provide: 'PodcastApp.UserService',
+    useClass: UserService,
+}
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+describe('UserControl (e2e)', () => {
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
-  });
+    let app: INestApplication;
+    let userService = { findAll: () => [ { id: 1, username: "zainal1", email: "zainal1@online-pajak.com" } ] };
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
-  });
+    beforeAll( async () => {
+        // const moduleFixture: TestingModule = await Test.createTestingModule({
+        //     imports: [ UsersModule ],
+        // })
+        // .overrideProvider(userServiceProvider)
+        // .useValue(userService)
+        // .compile();
+
+        // app = moduleFixture.createNestApplication();
+        app = await NestFactory.create(AppModule);
+        console.log(app);
+        await app.init();
+
+    });
+
+    it('/ (GET)', async () => {
+          const response = await request(app.getHttpServer())
+            .get('/api/v1/users')
+            .set('accept', 'application/json')
+            .set('content-type', 'application/json')
+            .send();
+
+        expect(response.status).toMatchInlineSnapshot();
+        expect(response.body).toMatchInlineSnapshot();
+
+        // return request(app.getHttpServer())
+        //     .get('/user')
+        //     .expect(200)
+        //     .expect({
+        //         data: userService.findAll(),
+        //     });
+
+    });
+
+    afterAll( async() =>{
+        await app.close();
+    } )
+
 });

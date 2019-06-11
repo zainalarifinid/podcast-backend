@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToMany, ManyToOne } from "typeorm";
+
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, ManyToOne } from "typeorm";
 import { ApiModelProperty } from "@nestjs/swagger";
 import { Podcast } from "../../podcast/entities/Podcast";
 import { User } from "../../user/entities/User";

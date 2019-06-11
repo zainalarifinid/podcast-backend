@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body } from "@nestjs/common";
+import { Controller, Get, Param, Post, Body, Inject } from "@nestjs/common";
 import { ProfileService } from "../services/ProfileService";
 import { Follower } from "../entities/Follower.dto";
 import { ApiUseTags, ApiOperation } from "@nestjs/swagger";
@@ -7,7 +7,10 @@ import { ApiUseTags, ApiOperation } from "@nestjs/swagger";
 @Controller('/api/v1/profile')
 export class ProfileController {
 
-    constructor(private profileService: ProfileService){}
+    constructor(
+        @Inject("PodcastApp.ProfileService")
+        private profileService: ProfileService
+    ){}
 
     @Get(':username/:username2')
     @ApiOperation({
