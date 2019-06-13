@@ -1,7 +1,7 @@
 import * as request from 'supertest';
 import { TestingModule, Test } from "@nestjs/testing";
-import { UsersModule } from "../src/user";
-import { UserService } from "../src/user/services/UserService";
+import { UsersModule } from "../src/User";
+import { UserService } from "../src/User/services/UserService";
 import { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../src/appModule';

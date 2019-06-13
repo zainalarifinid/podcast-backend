@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from "./user";
-import { PodcastsModule } from './podcast';
-import { PlaylistModule } from "./playlist";
-import { ProfileModule } from './profile';
+import { UsersModule } from "./User";
+import { PodcastsModule } from './Podcast';
+import { PlaylistModule } from "./Playlist";
+import { ProfileModule } from './Profile';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './auth';
+import { AuthModule } from './Auth';
 
 @Module({
   imports: [
