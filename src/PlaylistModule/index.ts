@@ -1,9 +1,8 @@
 import { Module } from "@nestjs/common";
-import { DatabaseModule } from "../database";
 import { PlaylistController } from "./controllers/PlaylistController";
 import { PlaylistService } from "./services/PlaylistService";
 import { playlistProvider } from "./providers/PlaylistProvider";
-import { PodcastsModule } from "../podcast";
+import { PodcastsModule } from "../PodcastModule";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { PlaylistRepository } from "./repositories";
 import { Playlist } from "./entities/Playlist";

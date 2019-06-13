@@ -4,9 +4,10 @@ import { UserService } from "./services/UserService";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "./entities/User";
 import { UserRepository } from "./repositories";
+import { USER_SERVICE } from "./constants";
 
 const userServiceProvider = {
-    provide: 'PodcastApp.UserService',
+    provide: USER_SERVICE,
     useClass: UserService,
 };
 
@@ -15,15 +16,6 @@ const userServiceProvider = {
     imports: [ TypeOrmModule.forFeature([User, UserRepository]) ],
     providers: [ userServiceProvider ],
     exports: [ userServiceProvider ]
-    // imports: [ DatabaseModule ],
-    // controllers: [ UsersController ],
-    // providers: [
-    //     userProvider,
-    //     UserService,
-    // ],
-    // exports: [
-    //     userProvider,
-    // ],
 })
 
 export class UsersModule {}

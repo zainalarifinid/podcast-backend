@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
 import { PodcastController } from './controllers/PodcastController';
 import { PodcastService } from './services/PodcastService';
-import { DatabaseModule } from '../database';
-import { podcastProvider } from './providers/PodcastProvider';
 
-import { UsersModule } from '../user';
+import { UsersModule } from '../UserModule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Podcast } from './entities/Podcast';
 import { PodcastRepository } from './repositories';

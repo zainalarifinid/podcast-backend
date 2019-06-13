@@ -1,6 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import { Injectable } from "@nestjs/common";
 import { User } from "../../user/entities/User";
+import { VerifyDto } from '../entities/verify.dto';
 
 const keySecret = "Doremi3TanggaNada";
 
@@ -27,9 +28,9 @@ export class AuthService{
         }
     }
 
-    async validateUser(token: string){
-        console.log(token);
-        const result = jwt.verify(token, keySecret);
+    async validateUser(verify: VerifyDto){
+        console.log(verify);
+        const result = jwt.verify(verify.token, keySecret);
         console.log(result);
         return result;
 
