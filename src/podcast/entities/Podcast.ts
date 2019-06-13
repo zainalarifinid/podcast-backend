@@ -23,7 +23,6 @@ export class Podcast{
     @Column()
     youtubeLink: string;
 
-    @ApiModelProperty()
     @ManyToOne(type => User, user => user.podcasts )
     user: User;
 

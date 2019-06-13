@@ -15,6 +15,9 @@ export class User{
     @ApiModelProperty()
     @Column({length: 150})
     username: string;
+    
+    @ApiModelProperty()
+    password: string;
 
     @OneToMany( type => Playlist, playlist => playlist.user )
     playlists: Playlist[];

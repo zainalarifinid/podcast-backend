@@ -1,0 +1,14 @@
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { ApiModelProperty } from "@nestjs/swagger";
+
+@Entity()
+export class Auth{
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @ApiModelProperty()
+    @Column()
+    username: string;
+    
+
+}
