@@ -1,7 +1,8 @@
-import { Controller, Get, Param, Post, Body, Inject } from "@nestjs/common";
+import { Controller, Get, Param, Post, Body, Inject, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
 import { ProfileService } from "../services/ProfileService";
 import { Follower } from "../entities/Follower.dto";
-import { ApiUseTags, ApiOperation } from "@nestjs/swagger";
+import { ApiUseTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 
 @ApiUseTags('Profile')
 @Controller('/api/v1/profile')
@@ -22,6 +23,8 @@ export class ProfileController {
     }
 
     @Post(':username/follow')
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
     @ApiOperation({
         title: 'Follow User',
         description: 'The API to set status following user'
@@ -31,6 +34,8 @@ export class ProfileController {
     }
 
     @Post(':username/unfollow')
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
     @ApiOperation({
         title: 'Unfollow User',
         description: 'The API to set status unfollowing user'

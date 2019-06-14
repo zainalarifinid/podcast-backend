@@ -1,8 +1,12 @@
 import { AuthService } from "./services/AuthService";
 import { Module } from "@nestjs/common";
 import { AuthController } from "./controllers/authController";
-import { TypeOrmModule } from "@nestjs/typeorm";
 import { UsersModule } from "../User";
+import { PassportModule } from "@nestjs/passport";
+import { JwtModule } from "@nestjs/jwt";
+import config from "../../config";
+import { JwtStrategy } from "./jwtStrategy";
+import { Strategy } from "passport-jwt";
 
 const AuthServiceProvider = {
     provide: 'PodcastApp.AuthService',
@@ -11,9 +15,18 @@ const AuthServiceProvider = {
 
 @Module({
     controllers: [ AuthController ],
-    imports: [ UsersModule ],
-    providers: [ AuthServiceProvider ],
-    exports: [ AuthServiceProvider ]
+    imports: [ 
+                PassportModule.register({defaultStrategy: "jwt"}), 
+                JwtModule.register({
+                    secretOrPrivateKey: config.jwtPrivateKey,
+                    signOptions: {
+                        expiresIn: 3600
+                    }
+                }),
+                UsersModule
+             ],
+    providers: [ AuthServiceProvider, JwtStrategy ],
+    exports: [ PassportModule, AuthServiceProvider ]
 })
 
 export class AuthModule {}

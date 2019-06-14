@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Inject, UseGuards } from '@nestjs/common';
+import { AuthGuard } from "@nestjs/passport";
 import { PodcastService } from '../services/PodcastService';
 import { Podcast } from '../entities/Podcast';
-import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
+import { ApiUseTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiUseTags('Podcast')
 @Controller('/api/v1/podcasts')
@@ -13,6 +14,8 @@ export class PodcastController {
     ){}
 
     @Post()
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
     @ApiOperation({
         title: 'Create Podcast',
         description: 'The API to create podcast'
@@ -31,6 +34,8 @@ export class PodcastController {
     }
 
     @Put(':id')
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
     @ApiOperation({
         title: 'Update Podcast',
         description: 'The API to update data podcast'
@@ -40,6 +45,8 @@ export class PodcastController {
     }
 
     @Delete(':id')
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
     @ApiOperation({
         title: 'Delete Podcast',
         description: 'The API to delete data podcast'

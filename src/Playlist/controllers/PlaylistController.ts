@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Inject, UseGuards } from '@nestjs/common';
+import { AuthGuard } from "@nestjs/passport";
 import { PlaylistService } from "../services/PlaylistService";
 import { Playlist } from "../entities/Playlist";
-import { ApiUseTags, ApiOperation } from '@nestjs/swagger';
+import { ApiUseTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiUseTags('Playlist')
 @Controller('/api/v1/playlists')
@@ -13,6 +14,8 @@ export class PlaylistController {
     ){}
 
     @Post(':id')
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
     @ApiOperation({
         title: 'Create Playlist',
         description: 'The API to create playlist'
@@ -31,6 +34,8 @@ export class PlaylistController {
     }
 
     @Put(':id')
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
     @ApiOperation({
         title: 'Update Playlist',
         description: 'The API to update data playlist'
@@ -40,6 +45,8 @@ export class PlaylistController {
     }
 
     @Delete(':id')
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
     @ApiOperation({
         title: 'Delete Playlist',
         description: 'The API to delete data playlist'
@@ -49,6 +56,8 @@ export class PlaylistController {
     }
 
     @Post(':id/add-playlist/:idPodcast')
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
     @ApiOperation({
         title: 'Add Podcast to Playlist',
         description: 'The API to add podcast to playlist'
@@ -58,6 +67,8 @@ export class PlaylistController {
     }
 
     @Post(':id/remove-playlist/:idPodcast')
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
     @ApiOperation({
         title: 'Remove Podcast to Playlist',
         description: 'The API to remove podcast from playlist'

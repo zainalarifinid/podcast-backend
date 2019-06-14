@@ -38,7 +38,9 @@ export class AuthController {
             if (!user){
                 throw new HttpException("User Not Found", HttpStatus.BAD_REQUEST);
             }else{
-                return this.authService.createToken(user);
+                if( this.userService.checkPasword(loginUser) ){
+                    return this.authService.createToken(user);
+                }
             }
         } )
     }

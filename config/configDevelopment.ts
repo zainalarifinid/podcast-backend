@@ -1,3 +1,3 @@
 export const config = {
-    jwtPrivateKey: 'PrivateKEY4podcast'
+    jwtPrivateKey: "PrivateKEY4podcast"
 };

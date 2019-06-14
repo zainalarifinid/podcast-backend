@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, Inject, UseGuards } from '@nestjs/c
 import { AuthGuard } from '@nestjs/passport';
 import { User } from "../entities/User";
 import { UserService } from "../services/UserService";
-import { ApiOperation, ApiUseTags } from '@nestjs/swagger';
+import { ApiOperation, ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiUseTags('User')
 @Controller('/api/v1/users')
@@ -24,7 +24,8 @@ export class UsersController {
     }
 
     @Get()
-    // @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
     @ApiOperation({
         title: 'Get User',
         description: 'The API to get all user'
