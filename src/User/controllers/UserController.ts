@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Inject, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Inject, UseGuards, Req } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from "../entities/User";
 import { UserService } from "../services/UserService";
@@ -32,6 +32,19 @@ export class UsersController {
     })
     index(): Promise<User[]>{
         return this.userService.findAll();
+    }
+
+    @Get("detail")
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @ApiOperation({
+        title: 'Get Detail user',
+        description: 'The API to get detail user'
+    })
+    async getDetail(
+            @Req() request: User
+            ): Promise<User>{
+        return this.userService.getDetail(request.id);
     }
 
 }

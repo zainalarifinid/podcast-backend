@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm";
 import { ApiModelProperty } from "@nestjs/swagger";
 import { User } from "../../User/entities/User";
+import { Playlist } from "../../Playlist/entities/Playlist";
 
 @Entity()
 export class Podcast{
@@ -25,5 +26,8 @@ export class Podcast{
 
     @ManyToOne(type => User, user => user.podcasts )
     user: User;
+
+    @OneToMany(type => Playlist, playlist => playlist.podcasts)
+    playlists: Playlist[]
 
 }

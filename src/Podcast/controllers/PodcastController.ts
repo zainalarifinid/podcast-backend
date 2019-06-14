@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Inject, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Inject, UseGuards, Req } from '@nestjs/common';
 import { AuthGuard } from "@nestjs/passport";
 import { PodcastService } from '../services/PodcastService';
 import { Podcast } from '../entities/Podcast';
@@ -20,8 +20,8 @@ export class PodcastController {
         title: 'Create Podcast',
         description: 'The API to create podcast'
     })
-    async create(@Param('id') id: number, @Body() podcast: Podcast){
-        return this.podcastService.create(id, podcast);
+    async create(@Req() request, @Body() podcast: Podcast){
+        return this.podcastService.create(request.user.id, podcast);
     }
 
     @Get()
@@ -40,8 +40,8 @@ export class PodcastController {
         title: 'Update Podcast',
         description: 'The API to update data podcast'
     })
-    async update(@Param('id') id: number, @Body() podcast: Podcast): Promise<any>{
-        return this.podcastService.update(id, podcast);
+    async update(@Req() request, @Body() podcast: Podcast): Promise<any>{
+        return this.podcastService.update(request.user.id, podcast);
     }
 
     @Delete(':id')

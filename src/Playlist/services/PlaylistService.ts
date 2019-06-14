@@ -35,15 +35,17 @@ export class PlaylistService{
             
         }
 
-        const newPlaylist = await this.playlistRepository.save(playlist);
         const user = await this.userRepository.findOne(idUser);
+        const newPlaylist = await this.playlistRepository.save(playlist);
+        newPlaylist.user = user;
+
         if(Array.isArray(user.playlists)){
             user.playlists.push(newPlaylist);
         }else{
             user.playlists = [ newPlaylist ];
         }
 
-        return newPlaylist
+        return newPlaylist;
 
     }
 

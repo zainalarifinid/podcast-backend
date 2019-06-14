@@ -40,22 +40,24 @@ export class PodcastService {
             throw new HttpException('Link Youtube have invalid format', HttpStatus.BAD_REQUEST);
         }
 
+        const user = await this.userRepository.findOne(id);
+
         let entryPodcast = new Podcast();
         entryPodcast.title = (podcast.title.length == 0)? "Untitled" : podcast.title;
         entryPodcast.duration = podcast.duration;
         entryPodcast.description = podcast.description;
         entryPodcast.youtubeLink = podcast.youtubeLink;
+        entryPodcast.user = user;
 
         const newPodcast = await this.podcastRepository.save(entryPodcast);
-        const user = await this.userRepository.findOne(id);
 
-        if(Array.isArray(user.podcasts)){
-            user.podcasts.push(entryPodcast)
-        }else{
-            user.podcasts = [entryPodcast];
-        }
+        // if(Array.isArray(user.podcasts)){
+        //     user.podcasts.push(entryPodcast)
+        // }else{
+        //     user.podcasts = [entryPodcast];
+        // }
 
-        await this.userRepository.save(user);
+        // await this.userRepository.save(user);
 
         return newPodcast;
 

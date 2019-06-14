@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Inject, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Inject, UseGuards, Req } from '@nestjs/common';
 import { AuthGuard } from "@nestjs/passport";
 import { PlaylistService } from "../services/PlaylistService";
 import { Playlist } from "../entities/Playlist";
 import { ApiUseTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { User } from '../../User/entities/User';
 
 @ApiUseTags('Playlist')
 @Controller('/api/v1/playlists')
@@ -20,8 +21,8 @@ export class PlaylistController {
         title: 'Create Playlist',
         description: 'The API to create playlist'
     })
-    async create(@Param("id") idUser: number, @Body() podcast: Playlist){
-        return this.playlistService.create(idUser, podcast);
+    async create(@Req() request: User, @Body() podcast: Playlist){
+        return this.playlistService.create(request.id, podcast);
     }
 
     @Get()
@@ -40,8 +41,8 @@ export class PlaylistController {
         title: 'Update Playlist',
         description: 'The API to update data playlist'
     })
-    async update(@Param('id') id: number, @Body() podcast: Playlist): Promise<any>{
-        return this.playlistService.update(id, podcast);
+    async update(@Req() request: User, @Body() podcast: Playlist): Promise<any>{
+        return this.playlistService.update(request.id, podcast);
     }
 
     @Delete(':id')

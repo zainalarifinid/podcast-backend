@@ -8,6 +8,7 @@ async function bootstrap() {
   const options = new DocumentBuilder()
     .setTitle('User Podcast')
     .setDescription('Create user for using podcast application')
+    .addBearerAuth('Authorization', 'header')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, options);

@@ -24,6 +24,11 @@ export class UserService{
         return await this.userRepository.findOne({email: email});
     }
 
+    async getDetail(id: number): Promise<User> {
+        // const dataUser = await this.userRepository.findOne({username: username});
+        return await this.userRepository.findOne({ where : { id: id },  relations: ["podcasts", "playlists"] });
+    }
+
     async create(user: User): Promise<User> {
         if(user.email.length == 0){
             throw new HttpException('Email is required', HttpStatus.BAD_REQUEST);            
