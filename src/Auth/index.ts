@@ -6,7 +6,6 @@ import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
 import config from "../../config";
 import { JwtStrategy } from "./jwtStrategy";
-import { Strategy } from "passport-jwt";
 
 const AuthServiceProvider = {
     provide: 'PodcastApp.AuthService',
@@ -18,7 +17,7 @@ const AuthServiceProvider = {
     imports: [ 
                 PassportModule.register({defaultStrategy: "jwt"}), 
                 JwtModule.register({
-                    secretOrPrivateKey: config.jwtPrivateKey,
+                    secret: config.jwtPrivateKey,
                     signOptions: {
                         expiresIn: 3600
                     }

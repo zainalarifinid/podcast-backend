@@ -64,15 +64,16 @@ export class PodcastService {
 
     }
 
-    async update(id, podcast: Podcast): Promise<UpdateResult> {
+    async update(id, idPodcast, podcast: Podcast): Promise<UpdateResult> {
 
-        const dataPodcast  = await this.podcastRepository.findOne(id);
+
+        const dataPodcast  = await this.podcastRepository.findOne(idPodcast);
         if(!!dataPodcast == false){
             // console.log("throw new HttpException");
             throw new HttpException('Podcast doesn\'t exist', HttpStatus.BAD_REQUEST);
         }
 
-        return await this.podcastRepository.update(id, podcast);
+        return await this.podcastRepository.update(idPodcast, podcast);
     }
 
     async delete( id ): Promise<DeleteResult> {

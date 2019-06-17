@@ -24,6 +24,10 @@ export class PlaylistService{
         return await this.playlistRepository.find();
     }
 
+    async getDetail(idPlaylist: number): Promise<Playlist> {
+        return await this.playlistRepository.findOne({where: {id: idPlaylist}, relations: ["podcast"]})
+    }
+
     async create(idUser: number, playlist: Playlist): Promise<Playlist> {
         
         playlist.title = (playlist.title.length == 0)? "Untitled" : playlist.title;
@@ -45,6 +49,8 @@ export class PlaylistService{
             user.playlists = [ newPlaylist ];
         }
 
+        await this.userRepository.save(user);
+        console.log(newPlaylist);
         return newPlaylist;
 
     }

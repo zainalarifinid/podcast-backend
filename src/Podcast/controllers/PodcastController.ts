@@ -40,8 +40,8 @@ export class PodcastController {
         title: 'Update Podcast',
         description: 'The API to update data podcast'
     })
-    async update(@Req() request, @Body() podcast: Podcast): Promise<any>{
-        return this.podcastService.update(request.user.id, podcast);
+    async update(@Req() request, @Param("id") idPodcast: number, @Body() podcast: Podcast): Promise<any>{
+        return this.podcastService.update(request.user.id, idPodcast, podcast);
     }
 
     @Delete(':id')

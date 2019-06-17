@@ -15,9 +15,9 @@ export class ProfileService{
         private readonly userRepository: UserRepository
     ){}
 
-    async getProfile(usernameFollower: string, usernameFollowing: string): Promise<ProfileRO>{
+    async getProfile(usernameFollower: number, usernameFollowing: string): Promise<ProfileRO>{
         //get profile
-        const userFollower = await this.userRepository.findOne({username: usernameFollower});
+        const userFollower = await this.userRepository.findOne({id: usernameFollower});
         const userFollowing = await this.userRepository.findOne({username: usernameFollowing});
         if(!!userFollowing == false){
             throw new HttpException('account not found', HttpStatus.BAD_REQUEST);
@@ -38,17 +38,18 @@ export class ProfileService{
         
     }
 
-    async follow(usernameFollower: string, usernameFollowing: string): Promise<ProfileRO>{
+    async follow(idUser: number, usernameFollowing: string): Promise<ProfileRO>{
 
-        if(!usernameFollower || !usernameFollowing){
+        if(!idUser || !usernameFollowing){
             throw new HttpException('account not found', HttpStatus.BAD_REQUEST);
-        }
-        if(usernameFollower == usernameFollowing){
-            throw new HttpException('Follower and following cannot be equal', HttpStatus.BAD_REQUEST);
         }
 
         //get data user follower
-        const userFollower = await this.userRepository.findOne({username: usernameFollower});
+        const userFollower = await this.userRepository.findOne({id: idUser});
+
+        if(userFollower.username == usernameFollowing){
+            throw new HttpException('Follower and following cannot be equal', HttpStatus.BAD_REQUEST);
+        }
 
         //get data user following
         const userFollowing = await this.userRepository.findOne({username: usernameFollowing});
@@ -76,16 +77,17 @@ export class ProfileService{
         return {profile};
     }
 
-    async unfollow(usernameFollower: string, usernameUnfollowing: string): Promise<ProfileRO>{
+    async unfollow(idUser: number, usernameUnfollowing: string): Promise<ProfileRO>{
 
-        if(!usernameFollower || !usernameUnfollowing){
+        if(!idUser || !usernameUnfollowing){
             throw new HttpException('Follower not found', HttpStatus.BAD_REQUEST);
         }
-        if(usernameFollower == usernameUnfollowing){
+
+        const userFollowing = await this.userRepository.findOne({id: idUser});
+
+        if(userFollowing.username == usernameUnfollowing){
             throw new HttpException('Follower and following cannot be equal', HttpStatus.BAD_REQUEST);
         }
-
-        const userFollowing = await this.userRepository.findOne({username: usernameFollower});
 
         const userUnfollowing = await this.userRepository.findOne({username: usernameUnfollowing});
         if(!!userUnfollowing == false){

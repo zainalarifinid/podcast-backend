@@ -1,11 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { ApiModelProperty } from '@nestjs/swagger';
-import { Podcast } from '../../Podcast/entities/Podcast';
-import { Playlist } from '../../Playlist/entities/Playlist';
+import { ApiModelProperty } from "@nestjs/swagger";
+import { Column, OneToMany } from "typeorm";
+import { Playlist } from "../../Playlist/entities/Playlist";
+import { Podcast } from "../../Podcast/entities/Podcast";
 
-@Entity()
-export class User{
-    @PrimaryGeneratedColumn()
+export class UserDto{
+    
+    @ApiModelProperty()
     id: number;
 
     @ApiModelProperty()

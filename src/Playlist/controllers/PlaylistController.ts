@@ -14,7 +14,7 @@ export class PlaylistController {
         private playlistService: PlaylistService 
     ){}
 
-    @Post(':id')
+    @Post()
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @ApiOperation({

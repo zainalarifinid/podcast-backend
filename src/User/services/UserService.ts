@@ -26,7 +26,9 @@ export class UserService{
 
     async getDetail(id: number): Promise<User> {
         // const dataUser = await this.userRepository.findOne({username: username});
-        return await this.userRepository.findOne({ where : { id: id },  relations: ["podcasts", "playlists"] });
+        const dataUser = await this.userRepository.findOne({ where : { id: id },  relations: ["podcasts", "playlists"] });
+        console.log(dataUser);
+        return dataUser;
     }
 
     async create(user: User): Promise<User> {

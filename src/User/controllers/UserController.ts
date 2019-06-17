@@ -3,6 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { User } from "../entities/User";
 import { UserService } from "../services/UserService";
 import { ApiOperation, ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
+import { UserDto } from '../entities/User.dto';
 
 @ApiUseTags('User')
 @Controller('/api/v1/users')
@@ -42,7 +43,7 @@ export class UsersController {
         description: 'The API to get detail user'
     })
     async getDetail(
-            @Req() request: User
+            @Req() request: UserDto
             ): Promise<User>{
         return this.userService.getDetail(request.id);
     }
