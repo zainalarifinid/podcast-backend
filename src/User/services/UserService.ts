@@ -1,5 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
-import { Repository } from "typeorm";
+import { Repository, Like } from "typeorm";
 import { User } from "../entities/User";
 import { InjectRepository } from "@nestjs/typeorm";
 import { genSalt, hash, compare } from "bcrypt";
@@ -25,13 +25,13 @@ export class UserService{
     }
 
     async getDetail(id: number): Promise<User> {
-        // const dataUser = await this.userRepository.findOne({username: username});
-        // const checkUser = await this.userRepository.findOne({ where: { id: id } });
-        // const checkUserWithPodcast = await this.userRepository.findOne({ where: { id: id }, relations: ["podcasts"] });
-        // console.log( "check each data", id, checkUser, checkUserWithPodcast );
-        const dataUser = await this.userRepository.findOne({ where : { id: id },  relations: ["podcasts", "playlists"] });
-        // console.log("dataUser",dataUser);
+        const dataUser = await this.userRepository.findOne({ where : { id: id },  relations: ["podcasts", "playlists", "followers", "followings"] });
         return dataUser;
+    }
+
+    async searchUser(username: string): Promise<User[]> {
+        const dataUsers = await this.userRepository.find({ where: { username: Like(`%${username}%`) }, relations: ["podcasts", "playlists", "followers", "followings"] })
+        return dataUsers;
     }
 
     async create(user: User): Promise<User> {

@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeleteResult, UpdateResult } from "typeorm";
+import { DeleteResult, UpdateResult, Like } from "typeorm";
 import { Podcast } from "../entities/Podcast";
 import { User } from "../../User/entities/User";
 import { PodcastRepository } from '../repositories';
@@ -24,6 +24,10 @@ export class PodcastService {
         const dataPodcast = await this.podcastRepository.find({ where: {id: idPodcast}, relations: ["user", "playlists"]  });
         // console.log("dataPodcast", idPodcast, dataPodcast);
         return dataPodcast;
+    }
+
+    async searchPodcast(titlePodcast: string): Promise<Podcast[]> {
+        return await this.podcastRepository.find({ title: Like(`%${titlePodcast}%`) });
     }
 
     async create(id: number, podcast: Podcast): Promise<Podcast> {

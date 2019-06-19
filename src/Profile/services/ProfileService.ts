@@ -15,94 +15,110 @@ export class ProfileService{
         private readonly userRepository: UserRepository
     ){}
 
-    async getProfile(usernameFollower: number, usernameFollowing: string): Promise<ProfileRO>{
-        //get profile
-        const userFollower = await this.userRepository.findOne({id: usernameFollower});
-        const userFollowing = await this.userRepository.findOne({username: usernameFollowing});
-        if(!!userFollowing == false){
-            throw new HttpException('account not found', HttpStatus.BAD_REQUEST);
-        }
+    // async getProfile(usernameFollower: number, usernameFollowing: string): Promise<User>{
+    //     //get profile
+    //     const userFollower = await this.userRepository.findOne({id: usernameFollower});
+    //     const userFollowing = await this.userRepository.findOne({relations: ['following']});
+    //     console.log(userFollowing);
+    //     if(!!userFollowing == false){
+    //         throw new HttpException('account not found', HttpStatus.BAD_REQUEST);
+    //     }
 
-        //check user following
-        const checkFollowing = await this.followRepository.findOne({followerId: userFollower.id, FollowingId: userFollowing.id});
 
-        //merge data profile and following stat
-        let profile: ProfileData = {
-            username: usernameFollowing,
-            podcasts: userFollowing.podcasts,
-            following: !!checkFollowing
-        };
+    //     return userFollowing;
 
-        //return the data
-        return {profile}; 
+    //     //check user following
+    //     // const checkFollowing = await this.followRepository.findOne({followerId: userFollower.id, FollowingId: userFollowing.id});
+
+    //     //merge data profile and following stat
+    //     // let profile: ProfileData = {
+    //     //     username: usernameFollowing,
+    //     //     podcasts: userFollowing.podcasts,
+    //     //     following: !!checkFollowing
+    //     // };
+
+    //     //return the data
+    //     // return {profile}; 
         
+    // }
+
+    async getFollower(username: string): Promise<User[]> {
+        return await this.userRepository.find({ where: { username: username }, relations: ["followers"] });
     }
 
-    async follow(idUser: number, usernameFollowing: string): Promise<ProfileRO>{
+    async getFollowing(username: string): Promise<User[]> {
+        return await this.userRepository.find({ where: { username: username }, relations: ["followings"] });
+    }
 
+    async follow(idUser: number, usernameFollowing: string): Promise<User>{
+        // console.log(idUser, usernameFollowing);
         if(!idUser || !usernameFollowing){
             throw new HttpException('account not found', HttpStatus.BAD_REQUEST);
         }
 
         //get data user follower
-        const userFollower = await this.userRepository.findOne({id: idUser});
+        const currentUser = await this.userRepository.findOne({ where: {id: idUser}, relations: ["followings"] });
 
-        if(userFollower.username == usernameFollowing){
+        if(currentUser.username == usernameFollowing){
             throw new HttpException('Follower and following cannot be equal', HttpStatus.BAD_REQUEST);
         }
 
         //get data user following
-        const userFollowing = await this.userRepository.findOne({username: usernameFollowing});
+        const userFollowing = await this.userRepository.findOne({ where: {username: usernameFollowing}, relations: ["followers"] });
+        // console.log(userFollowing);
         if(!!userFollowing == false){
             throw new HttpException('account not found', HttpStatus.BAD_REQUEST);
         }
-        
-        //make relation follower
-        let isFollowing = await this.followRepository.findOne({followerId: userFollower.id, FollowingId: userFollowing.id });
 
-        let following = isFollowing;
-        if(!isFollowing){
-            following = new Follow();
-            following.followerId = userFollower.id;
-            following.FollowingId = userFollowing.id;
-            await this.followRepository.save(following);
+        console.log("User Following", currentUser, userFollowing);
+
+        if(currentUser.followings.length > 0){
+            currentUser.followings.push(userFollowing);
+        }else{
+            currentUser.followings = [ userFollowing ];
         }
 
-        let profile: ProfileData = {
-            username: userFollowing.username,
-            podcasts: userFollowing.podcasts,
-            following: true
-        };
+        if(userFollowing.followers.length > 0){
+            userFollowing.followers.push(currentUser);
+        }else{
+            userFollowing.followers = [ currentUser ];
+        }
 
-        return {profile};
+        await this.userRepository.save(currentUser);
+        await this.userRepository.save(userFollowing);
+
+        return userFollowing;
     }
 
-    async unfollow(idUser: number, usernameUnfollowing: string): Promise<ProfileRO>{
+    async unfollow(idUser: number, usernameUnfollowing: string): Promise<User>{
 
         if(!idUser || !usernameUnfollowing){
             throw new HttpException('Follower not found', HttpStatus.BAD_REQUEST);
         }
 
-        const userFollowing = await this.userRepository.findOne({id: idUser});
+        const currentUser = await this.userRepository.findOne({ where: {id: idUser}, relations: ["followings"] });
 
-        if(userFollowing.username == usernameUnfollowing){
+        if(currentUser.username == usernameUnfollowing){
             throw new HttpException('Follower and following cannot be equal', HttpStatus.BAD_REQUEST);
         }
 
-        const userUnfollowing = await this.userRepository.findOne({username: usernameUnfollowing});
+        const userUnfollowing = await this.userRepository.findOne({ where: {username: usernameUnfollowing}, relations: ["followers"] });
         if(!!userUnfollowing == false){
             throw new HttpException('account not found', HttpStatus.BAD_REQUEST);
         }
 
-        await this.followRepository.delete({followerId: userFollowing.id, FollowingId: userUnfollowing.id});
+        currentUser.followings = currentUser.followings.filter( (obj) => {
+            return obj.id != userUnfollowing.id;
+        });
 
-        let profile: ProfileData = {
-            username: userUnfollowing.username,
-            podcasts: userUnfollowing.podcasts,
-            following: false
-        };
+        userUnfollowing.followers = userUnfollowing.followers.filter( (obj) => {
+            return obj.id != idUser;
+        });
 
-        return {profile};
+        await this.userRepository.save(currentUser);
+        await this.userRepository.save(userUnfollowing);
+
+        return userUnfollowing;
     }
 
 }

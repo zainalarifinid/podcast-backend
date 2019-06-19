@@ -24,10 +24,32 @@ export class ProfileController {
             @Req() request: UserDto,
             @Param('username') usernameFollowing: string 
     ){
-        return this.profileService.getProfile(request.id, usernameFollowing);
+        // return this.profileService.getProfile(request.id, usernameFollowing);
     }
 
-    @Post('follow')
+    @Get("follower/:username")
+    @ApiOperation({
+        title: 'Get Follower',
+        description: 'The API to list data follower'
+    })
+    async getFollower(
+        @Param("username") username: string
+    ):Promise<User[]>{
+        return this.profileService.getFollower(username);
+    }
+    
+    @Get("following/:username")
+    @ApiOperation({
+        title: 'Get Follower',
+        description: 'The API to list data follower'
+    })
+    async getFollowing(
+        @Param("username") username: string
+    ):Promise<User[]>{
+        return this.profileService.getFollowing(username);
+    }
+
+    @Post('follow/:username')
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @ApiOperation({
@@ -35,13 +57,13 @@ export class ProfileController {
         description: 'The API to set status following user'
     })
     async follow(
-            @Req() request: UserDto, 
-            @Param('username') usernameFollowing: string
-    ){        
-        return this.profileService.follow(request.id, usernameFollowing);
+            @Req() request: any, 
+            @Param('username') username: string
+    ): Promise<User>{        
+        return this.profileService.follow(request.user.id, username);
     }
 
-    @Post(':username/unfollow')
+    @Post('unfollow/:username')
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @ApiOperation({
@@ -49,10 +71,10 @@ export class ProfileController {
         description: 'The API to set status unfollowing user'
     })
     async unfollow(
-            @Req() request: UserDto, 
-            @Param('username') usernameFollowing: string
-    ){
-        return this.profileService.unfollow(request.id, usernameFollowing);
+            @Req() request: any, 
+            @Param('username') username: string
+    ): Promise<User>{
+        return this.profileService.unfollow(request.user.id, username);
     }
 
 

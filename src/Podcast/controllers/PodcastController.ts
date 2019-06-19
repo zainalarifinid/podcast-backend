@@ -65,4 +65,15 @@ export class PodcastController {
         return this.podcastService.delete(id);
     }
 
+    @Get("search/:keyword")
+    @ApiOperation({
+        title: 'Search Podcast',
+        description: 'The API to get list podcast by keyword'
+    })
+    async searchUser(
+        @Param("keyword") keyword: string
+    ): Promise<Podcast[]>{
+        return this.podcastService.searchPodcast(keyword);
+    }
+
 }

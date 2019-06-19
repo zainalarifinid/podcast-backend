@@ -48,4 +48,15 @@ export class UsersController {
         return this.userService.getDetail(request.user.id);
     }
 
+    @Get("search/:username")
+    @ApiOperation({
+        title: 'Search user',
+        description: 'The API to get list user by keyword'
+    })
+    async searchUser(
+        @Param("username") username: string
+    ): Promise<User[]>{
+        return this.userService.searchUser(username);
+    }
+
 }

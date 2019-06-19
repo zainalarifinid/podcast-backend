@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable, RelationCount } from 'typeorm';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { Podcast } from '../../Podcast/entities/Podcast';
 import { Playlist } from '../../Playlist/entities/Playlist';
@@ -25,5 +25,19 @@ export class User{
 
     @OneToMany( type => Podcast, podcast => podcast.user)
     podcasts: Podcast[];
+
+    @ManyToMany( type => User, user => user.followers )
+    @JoinTable()
+    followers: User[];
+
+    @ManyToMany( type => User, user => user.followings )
+    @JoinTable()
+    followings: User[];
+
+    @RelationCount((user: User) => user.followers)
+    followersCount: number;
+    
+    @RelationCount((user: User) => user.followings)
+    followingCount: number;
 
 }
