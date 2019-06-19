@@ -1,5 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { DeleteResult, UpdateResult } from "typeorm";
+import { DeleteResult, UpdateResult, Like } from "typeorm";
 import { Playlist } from "../entities/Playlist";
 import { Podcast } from '../../Podcast/entities/Podcast';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -25,7 +25,11 @@ export class PlaylistService{
     }
 
     async getDetail(idPlaylist: number): Promise<Playlist> {
-        return await this.playlistRepository.findOne({where: {id: idPlaylist}, relations: ["podcast"]})
+        return await this.playlistRepository.findOne({where: {id: idPlaylist}, relations: ["podcasts"]})
+    }
+
+    async searchPlaylist(keyword: string): Promise<Playlist[]> {
+        return await this.playlistRepository.find({ relations: ["podcasts"], where: { title: Like(`%${keyword}%`) } });
     }
 
     async create(idUser: number, playlist: Playlist): Promise<Playlist> {

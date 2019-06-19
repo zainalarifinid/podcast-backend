@@ -21,7 +21,7 @@ export class PlaylistController {
         title: 'Create Playlist',
         description: 'The API to create playlist'
     })
-    async create(@Req() request: User, @Body() podcast: Playlist){
+    async create(@Req() request: User, @Body() podcast: Playlist): Promise<Playlist>{
         return this.playlistService.create(request.id, podcast);
     }
 
@@ -76,6 +76,15 @@ export class PlaylistController {
     })
     async removePlaylist(@Param('id') id: number, @Param('idPodcast') idPodcast: number): Promise<Playlist>{
         return this.playlistService.removePlaylist(id, idPodcast);
+    }
+
+    @Get('search/:keyword')
+    @ApiOperation({
+        title: 'Search Playlist by Keyword',
+        description: 'The API to search playlsit by keyword'
+    })
+    async searchPlaylist(@Param("keyword") keyword: string): Promise<Playlist[]>{
+        return this.playlistService.searchPlaylist(keyword);
     }
 
 }
