@@ -1,5 +1,5 @@
 import { JwtService } from '@nestjs/jwt';
-import { Injectable } from "@nestjs/common";
+import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 import { User } from "../../User/entities/User";
 import { VerifyDto } from '../entities/verify.dto';
 
@@ -30,10 +30,12 @@ export class AuthService{
 
     async validateUser(verify: VerifyDto){
         console.log(verify);
-        const result = this.jwtService.verify(verify.token);
-        console.log(result);
-        return result;
-
+        try{
+            const result = {...this.jwtService.verify(verify.token), accessToken: verify.token};
+            return result;
+        }catch(error){
+            throw new HttpException("Not valid token", HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

@@ -24,6 +24,16 @@ export class PodcastController {
         return this.podcastService.create(request.user.id, podcast);
     }
 
+    @Get('detail/:id')
+    @ApiOperation({
+        title: 'Get Detail Podcast',
+        description: 'The API to get detail podcast'
+    })
+    async detail( @Param("id") id: number ): Promise<any>{
+        // console.log("Podcast Controller : ", id);
+        return this.podcastService.findDetail(id);
+    }
+
     @Get()
     @ApiOperation({
         title: 'Get Podcast',
@@ -40,7 +50,7 @@ export class PodcastController {
         title: 'Update Podcast',
         description: 'The API to update data podcast'
     })
-    async update(@Req() request, @Param("id") idPodcast: number, @Body() podcast: Podcast): Promise<any>{
+    async update(@Req() request: any, @Param("id") idPodcast: number, @Body() podcast: Podcast): Promise<any>{
         return this.podcastService.update(request.user.id, idPodcast, podcast);
     }
 

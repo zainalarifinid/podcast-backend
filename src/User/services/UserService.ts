@@ -26,8 +26,11 @@ export class UserService{
 
     async getDetail(id: number): Promise<User> {
         // const dataUser = await this.userRepository.findOne({username: username});
+        // const checkUser = await this.userRepository.findOne({ where: { id: id } });
+        // const checkUserWithPodcast = await this.userRepository.findOne({ where: { id: id }, relations: ["podcasts"] });
+        // console.log( "check each data", id, checkUser, checkUserWithPodcast );
         const dataUser = await this.userRepository.findOne({ where : { id: id },  relations: ["podcasts", "playlists"] });
-        console.log(dataUser);
+        // console.log("dataUser",dataUser);
         return dataUser;
     }
 
@@ -60,9 +63,11 @@ export class UserService{
         return await this.userRepository.save(user);
     }
 
-    async checkPasword(user: LoginUserDto): Promise<User> {
+    async checkPasword(user: LoginUserDto): Promise<Boolean> {
         const dataUser = await this.userRepository.findOne({email: user.email});
-        return compare( user.password, dataUser.password );
+        console.log(dataUser);
+        console.log(user.password, dataUser.password, compare( user.password, dataUser.password));
+        return compare( user.password, dataUser.password);
     }
 
 }

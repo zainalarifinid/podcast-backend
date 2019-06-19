@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinTable, ManyToMany } from "typeorm";
 import { ApiModelProperty } from "@nestjs/swagger";
 import { User } from "../../User/entities/User";
 import { Playlist } from "../../Playlist/entities/Playlist";
@@ -24,10 +24,13 @@ export class Podcast{
     @Column()
     youtubeLink: string;
 
+    
     @ManyToOne(type => User, user => user.podcasts )
     user: User;
 
-    @OneToMany(type => Playlist, playlist => playlist.podcasts)
-    playlists: Playlist[]
+    
+    @ManyToMany(type => Playlist, playlist => playlist.podcasts )
+    @JoinTable()
+    playlists: Playlist[];
 
 }

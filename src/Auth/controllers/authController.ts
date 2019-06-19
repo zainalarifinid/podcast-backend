@@ -40,6 +40,8 @@ export class AuthController {
             }else{
                 if( this.userService.checkPasword(loginUser) ){
                     return this.authService.createToken(user);
+                }else{
+                    throw new HttpException("Incorrect Password", HttpStatus.BAD_REQUEST);
                 }
             }
         } )

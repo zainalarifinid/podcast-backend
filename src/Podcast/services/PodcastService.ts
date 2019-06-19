@@ -20,6 +20,12 @@ export class PodcastService {
         return await this.podcastRepository.find();
     }
 
+    async findDetail(idPodcast: number): Promise<Podcast[]> {
+        const dataPodcast = await this.podcastRepository.find({ where: {id: idPodcast}, relations: ["user", "playlists"]  });
+        // console.log("dataPodcast", idPodcast, dataPodcast);
+        return dataPodcast;
+    }
+
     async create(id: number, podcast: Podcast): Promise<Podcast> {
         
         if(podcast.duration.length == 0){
@@ -34,7 +40,7 @@ export class PodcastService {
             throw new HttpException('Link Youtube is required', HttpStatus.BAD_REQUEST);
         }
 
-        var youtubeLinkFormat = /^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/;
+        var youtubeLinkFormat = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gm;
 
         if(!youtubeLinkFormat.test(podcast.youtubeLink)){
             throw new HttpException('Link Youtube have invalid format', HttpStatus.BAD_REQUEST);

@@ -43,9 +43,9 @@ export class UsersController {
         description: 'The API to get detail user'
     })
     async getDetail(
-            @Req() request: UserDto
+            @Req() request: any
             ): Promise<User>{
-        return this.userService.getDetail(request.id);
+        return this.userService.getDetail(request.user.id);
     }
 
 }
