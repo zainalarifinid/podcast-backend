@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Inject, UseGuards, Req } from '@nestjs/common';
 import { AuthGuard } from "@nestjs/passport";
 import { PlaylistService } from "../services/PlaylistService";
-import { Playlist } from "../entities/Playlist";
+import { Playlist, PlaylistPodcastDto } from "../entities";
 import { ApiUseTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { User } from '../../User/entities/User';
 
@@ -21,8 +21,8 @@ export class PlaylistController {
         title: 'Create Playlist',
         description: 'The API to create playlist'
     })
-    async create(@Req() request: User, @Body() podcast: Playlist): Promise<Playlist>{
-        return this.playlistService.create(request.id, podcast);
+    async create(@Req() request, @Body() playlist: Playlist){
+        return this.playlistService.create(request.user.id, playlist);
     }
 
     @Get()
@@ -32,6 +32,15 @@ export class PlaylistController {
     })
     index(): Promise<Playlist[]>{
         return this.playlistService.findAll();
+    }
+
+    @Post('detail-from')
+    @ApiOperation({
+        title: 'Get list Playlist by user',
+        description: 'The API to list playlist from one user'
+    })
+    async getListPlaylist(@Body() dataPodcast : PlaylistPodcastDto ) {
+        return this.playlistService.getListPlaylist(dataPodcast.username, dataPodcast.idPodcast);
     }
 
     @Put(':id')
@@ -63,7 +72,7 @@ export class PlaylistController {
         title: 'Add Podcast to Playlist',
         description: 'The API to add podcast to playlist'
     })
-    async addPlayList(@Param('id') id: number, @Param('idPodcast') idPodcast: number): Promise<Playlist>{
+    async addPlayList(@Param('id') id: number, @Param('idPodcast') idPodcast: number): Promise<any>{
         return this.playlistService.addPlayList(id, idPodcast);
     }
 
@@ -74,7 +83,7 @@ export class PlaylistController {
         title: 'Remove Podcast to Playlist',
         description: 'The API to remove podcast from playlist'
     })
-    async removePlaylist(@Param('id') id: number, @Param('idPodcast') idPodcast: number): Promise<Playlist>{
+    async removePlaylist(@Param('id') id: number, @Param('idPodcast') idPodcast: number): Promise<any>{
         return this.playlistService.removePlaylist(id, idPodcast);
     }
 

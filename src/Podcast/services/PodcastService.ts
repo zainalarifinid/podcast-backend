@@ -20,8 +20,8 @@ export class PodcastService {
         return await this.podcastRepository.find();
     }
 
-    async findDetail(idPodcast: number): Promise<Podcast[]> {
-        const dataPodcast = await this.podcastRepository.find({ where: {id: idPodcast}, relations: ["user", "playlists"]  });
+    async findDetail(idPodcast: number): Promise<Podcast> {
+        const dataPodcast = await this.podcastRepository.findOne({ where: {id: idPodcast}, relations: ["user", "playlists"]  });
         // console.log("dataPodcast", idPodcast, dataPodcast);
         return dataPodcast;
     }

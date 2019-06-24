@@ -21,18 +21,37 @@ export class PlaylistService{
     ) {}
 
     async findAll(): Promise<Playlist[]> {
-        return await this.playlistRepository.find();
+        return await this.playlistRepository.find({relations: ["podcasts", "user"]});
     }
 
     async getDetail(idPlaylist: number): Promise<Playlist> {
         return await this.playlistRepository.findOne({where: {id: idPlaylist}, relations: ["podcasts"]})
     }
 
+    async getListPlaylist(username: string, idPodcast: number): Promise<User> {
+        // return await this.playlistRepository.find({ where: {id: idUser}, relations: ["playlists"] });
+        let dataUser = await this.userRepository.findOne({ where: {username: username}, relations: ["playlists"] });
+        const getDetailPodcast = await this.podcastRepository.findOne({ where: {id: idPodcast}, relations: ["playlists"] });
+
+        dataUser.playlists = dataUser.playlists.map( (dataPlaylist) => {
+            if( Array.isArray( getDetailPodcast.playlists ) ){
+                
+                dataPlaylist["inPlaylist"] = ( getDetailPodcast.playlists.filter( (dataPodcast) => dataPodcast.id == dataPlaylist.id ) ).length > 0;
+
+            }else{
+                dataPlaylist["inPlaylist"] = false;
+            }
+            return dataPlaylist;
+        });
+
+        return dataUser;
+    }
+
     async searchPlaylist(keyword: string): Promise<Playlist[]> {
         return await this.playlistRepository.find({ relations: ["podcasts"], where: { title: Like(`%${keyword}%`) } });
     }
 
-    async create(idUser: number, playlist: Playlist): Promise<Playlist> {
+    async create(idUser: number, playlist: Playlist) {
         
         playlist.title = (playlist.title.length == 0)? "Untitled" : playlist.title;
 
@@ -42,12 +61,11 @@ export class PlaylistService{
             throw new HttpException('Title is exist', HttpStatus.BAD_REQUEST);
             
         }
-
-        const user = await this.userRepository.findOne(idUser);
+        const user = await this.userRepository.findOne({ where: { id: idUser }, relations: ["playlists"] });
         const newPlaylist = await this.playlistRepository.save(playlist);
         newPlaylist.user = user;
-
-        if(Array.isArray(user.playlists)){
+        console.log("check user : ", idUser, user);
+        if(user.playlists.length > 0){
             user.playlists.push(newPlaylist);
         }else{
             user.playlists = [ newPlaylist ];
@@ -55,7 +73,7 @@ export class PlaylistService{
 
         await this.userRepository.save(user);
         console.log(newPlaylist);
-        return newPlaylist;
+        return {newPlaylist};
 
     }
 
@@ -84,24 +102,36 @@ export class PlaylistService{
     }
 
 
-    async addPlayList(idPlaylist: number, idPodcast: number): Promise<Playlist> {
+    async addPlayList(idPlaylist: number, idPodcast: number): Promise<any> {
 
-        const playlist = await this.playlistRepository.findOne(idPlaylist);
+        let playlist = await this.playlistRepository.findOne({ where: { id: idPlaylist }, relations: ["podcasts"] });
         //!!playlist mean playlist was empty
         if(!!playlist == false){
             // console.log("throw new HttpException");
             throw new HttpException('Playlist doesn\'t exist', HttpStatus.BAD_REQUEST);
         }
 
-        const podcast  = await this.podcastRepository.findOne(idPodcast)
-        if(Array.isArray(playlist.podcasts)){
+        let podcast  = await this.podcastRepository.findOne({ where: { id: idPodcast }, relations: ["playlists"] });
+
+        console.log(playlist);
+        console.log(podcast)
+
+        if( playlist.podcasts.length > 0 ){
             playlist.podcasts.push(podcast);
         }else{
             playlist.podcasts = [ podcast ];
         }
 
+        if( podcast.playlists.length > 0 ){
+            podcast.playlists.push(playlist);
+        }else{
+            podcast.playlists = [ playlist ];
+        }
+        console.log(playlist);
+        console.log(podcast);
         await this.playlistRepository.save(playlist);
-        
+        await this.podcastRepository.save(podcast);
+
         // console.log("pass the HttpException");
 
         return playlist;
@@ -130,4 +160,5 @@ export class PlaylistService{
         return playlist;
 
     }
+    
 }
