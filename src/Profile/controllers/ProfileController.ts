@@ -21,10 +21,9 @@ export class ProfileController {
         description: 'The API to list data user and status following user'
     })
     async getProfile(
-            @Req() request: UserDto,
-            @Param('username') usernameFollowing: string 
-    ){
-        // return this.profileService.getProfile(request.id, usernameFollowing);
+            @Param('username') username: string 
+    ):Promise<User>{
+        return this.profileService.getProfile(username);
     }
 
     @Get("follower/:username")

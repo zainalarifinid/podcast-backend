@@ -15,32 +15,30 @@ export class ProfileService{
         private readonly userRepository: UserRepository
     ){}
 
-    // async getProfile(usernameFollower: number, usernameFollowing: string): Promise<User>{
-    //     //get profile
-    //     const userFollower = await this.userRepository.findOne({id: usernameFollower});
-    //     const userFollowing = await this.userRepository.findOne({relations: ['following']});
-    //     console.log(userFollowing);
-    //     if(!!userFollowing == false){
-    //         throw new HttpException('account not found', HttpStatus.BAD_REQUEST);
-    //     }
+    async getProfile( username: string ): Promise<User>{
+        //get profile
+        const detailUser = await this.userRepository.findOne({where: { username: username }, relations: ["podcasts", "playlists", "followings", "followers"]});
+        if(!!detailUser == false){
+            throw new HttpException('account not found', HttpStatus.BAD_REQUEST);
+        }
 
 
-    //     return userFollowing;
+        return detailUser;
 
-    //     //check user following
-    //     // const checkFollowing = await this.followRepository.findOne({followerId: userFollower.id, FollowingId: userFollowing.id});
+        //check user following
+        // const checkFollowing = await this.followRepository.findOne({followerId: userFollower.id, FollowingId: userFollowing.id});
 
-    //     //merge data profile and following stat
-    //     // let profile: ProfileData = {
-    //     //     username: usernameFollowing,
-    //     //     podcasts: userFollowing.podcasts,
-    //     //     following: !!checkFollowing
-    //     // };
+        //merge data profile and following stat
+        // let profile: ProfileData = {
+        //     username: usernameFollowing,
+        //     podcasts: userFollowing.podcasts,
+        //     following: !!checkFollowing
+        // };
 
-    //     //return the data
-    //     // return {profile}; 
+        //return the data
+        // return {profile}; 
         
-    // }
+    }
 
     async getFollower(username: string): Promise<User[]> {
         return await this.userRepository.find({ where: { username: username }, relations: ["followers"] });
