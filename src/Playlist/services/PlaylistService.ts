@@ -51,7 +51,7 @@ export class PlaylistService{
         return await this.playlistRepository.find({ relations: ["podcasts"], where: { title: Like(`%${keyword}%`) } });
     }
 
-    async create(idUser: number, playlist: Playlist) {
+    async create(idUser: number, playlist: Playlist): Promise<any> {
         
         playlist.title = (playlist.title.length == 0)? "Untitled" : playlist.title;
 
@@ -103,48 +103,38 @@ export class PlaylistService{
 
 
     async addPlayList(idPlaylist: number, idPodcast: number): Promise<any> {
-
-        let playlist = await this.playlistRepository.findOne({ where: { id: idPlaylist }, relations: ["podcasts"] });
-        //!!playlist mean playlist was empty
-        if(!!playlist == false){
+        const dataPlaylist = await this.playlistRepository.findOne({ where: { id: idPlaylist }, relations: ["podcasts"] });
+        console.log(dataPlaylist);
+        
+        if(!!dataPlaylist == false){
             // console.log("throw new HttpException");
             throw new HttpException('Playlist doesn\'t exist', HttpStatus.BAD_REQUEST);
         }
-
-        let podcast  = await this.podcastRepository.findOne({ where: { id: idPodcast }, relations: ["playlists"] });
-
-        console.log(playlist);
-        console.log(podcast)
-
-        if( playlist.podcasts.length > 0 ){
-            playlist.podcasts.push(podcast);
-        }else{
-            playlist.podcasts = [ podcast ];
+        const dataPodcast  = await this.podcastRepository.findOne({ where: { id: idPodcast } });
+        if (!dataPodcast) {
+            throw new HttpException('Podcast doesn\'t exist', HttpStatus.BAD_REQUEST);
         }
 
-        if( podcast.playlists.length > 0 ){
-            podcast.playlists.push(playlist);
+        if( dataPlaylist.podcasts.length > 0){
+            if (dataPlaylist.podcasts.find((podcast) => podcast.id === idPodcast)) {
+                return { dataPlaylist };
+            }
+            dataPlaylist.podcasts.push( dataPodcast );
         }else{
-            podcast.playlists = [ playlist ];
+            dataPlaylist.podcasts = [ dataPodcast ];
         }
-        console.log(playlist);
-        console.log(podcast);
-        await this.playlistRepository.save(playlist);
-        await this.podcastRepository.save(podcast);
-
-        // console.log("pass the HttpException");
-
-        return playlist;
+        await this.playlistRepository.save(dataPlaylist);
+        return {dataPlaylist};
 
     }
 
-    async removePlaylist(idPlaylist: number, idPodcast: number): Promise<Playlist>{
-        let playlist = await this.playlistRepository.findOne(idPlaylist);
+    async removePlaylist(idPlaylist: number, idPodcast: number): Promise<any>{
+        let playlist = await this.playlistRepository.findOne({ where: { id: idPlaylist }, relations: ["podcasts"] });
         if(!!playlist == false){
             // console.log("throw new HttpException");
             throw new HttpException('Playlist doesn\'t exist', HttpStatus.BAD_REQUEST);
         }
-        const podcast  = await this.podcastRepository.findOne(idPodcast);
+        const podcast  = await this.podcastRepository.findOne({ where: { id: idPodcast }, relations: ["playlists"] });
         if(!!podcast == false){
             // console.log("throw new HttpException");
             throw new HttpException('Podcast doesn\'t exist', HttpStatus.BAD_REQUEST);
@@ -157,7 +147,7 @@ export class PlaylistService{
             playlist = await this.playlistRepository.save(playlist);
         }
 
-        return playlist;
+        return {playlist};
 
     }
     

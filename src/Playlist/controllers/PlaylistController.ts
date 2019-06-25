@@ -21,8 +21,9 @@ export class PlaylistController {
         title: 'Create Playlist',
         description: 'The API to create playlist'
     })
-    async create(@Req() request, @Body() playlist: Playlist){
-        return this.playlistService.create(request.user.id, playlist);
+    async create(@Req() request, @Body() playlist: Playlist): Promise<any>{
+        const result = this.playlistService.create(request.user.id, playlist);
+        return {result};
     }
 
     @Get()

@@ -24,13 +24,9 @@ export class Podcast{
     @Column()
     youtubeLink: string;
 
-    
     @ManyToOne(type => User, user => user.podcasts )
     user: User;
-
     
     @ManyToMany(type => Playlist, playlist => playlist.podcasts )
-    @JoinTable()
     playlists: Playlist[];
-
 }

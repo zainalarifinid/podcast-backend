@@ -8,19 +8,18 @@ import { AuthModule } from './Auth';
 
 @Module({
   imports: [
-              UsersModule, 
-              PodcastsModule, 
-              PlaylistModule, 
-              ProfileModule, 
-              AuthModule,
-              TypeOrmModule.forRoot({
-                type: 'sqlite',
-                database: process.env.NODE_ENV === 'test' ? ':memory:' : 'db',
-                entities: [
-                    __dirname + '/../../**/entities/**{.ts,.js}',
-                ],
-              synchronize: true,
-              })
-           ]
+    UsersModule,
+    PodcastsModule,
+    PlaylistModule,
+    ProfileModule,
+    AuthModule,
+    TypeOrmModule.forRoot({
+      type: 'sqlite',
+      database: process.env.NODE_ENV === 'test' ? ':memory:' : 'db',
+      entities: [__dirname + '/../../**/entities/**{.ts,.js}'],
+      synchronize: true,
+      logging: process.env.NODE_ENV === 'development',
+    }),
+  ],
 })
 export class AppModule {}

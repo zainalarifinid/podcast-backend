@@ -7,7 +7,7 @@ import { FollowRepository } from "../repositories/FollowRepositories";
 import { UserRepository } from "../../User/repositories";
 
 @Injectable()
-export class ProfileService{
+export class ProfileService {
     constructor(
         @InjectRepository(Follow)
         private readonly followRepository: FollowRepository,
@@ -24,19 +24,6 @@ export class ProfileService{
 
 
         return detailUser;
-
-        //check user following
-        // const checkFollowing = await this.followRepository.findOne({followerId: userFollower.id, FollowingId: userFollowing.id});
-
-        //merge data profile and following stat
-        // let profile: ProfileData = {
-        //     username: usernameFollowing,
-        //     podcasts: userFollowing.podcasts,
-        //     following: !!checkFollowing
-        // };
-
-        //return the data
-        // return {profile}; 
         
     }
 
@@ -62,7 +49,7 @@ export class ProfileService{
         }
 
         //get data user following
-        const userFollowing = await this.userRepository.findOne({ where: {username: usernameFollowing}, relations: ["followers"] });
+        const userFollowing = await this.userRepository.findOne({ where: {username: usernameFollowing} });
         // console.log(userFollowing);
         if(!!userFollowing == false){
             throw new HttpException('account not found', HttpStatus.BAD_REQUEST);
@@ -76,14 +63,7 @@ export class ProfileService{
             currentUser.followings = [ userFollowing ];
         }
 
-        if(userFollowing.followers.length > 0){
-            userFollowing.followers.push(currentUser);
-        }else{
-            userFollowing.followers = [ currentUser ];
-        }
-
         await this.userRepository.save(currentUser);
-        await this.userRepository.save(userFollowing);
 
         return userFollowing;
     }

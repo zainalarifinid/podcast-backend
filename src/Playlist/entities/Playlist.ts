@@ -17,7 +17,7 @@ export class Playlist{
     @ManyToOne( type => User, user => user.playlists )
     user: User;
 
-    @ManyToMany( type => Podcast, podcast => podcast.playlists)
+    @ManyToMany( type => Podcast, podcast => podcast.playlists, { nullable: true })
     @JoinTable()
     podcasts: Podcast[];
 
