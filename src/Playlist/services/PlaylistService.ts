@@ -145,15 +145,22 @@ export class PlaylistService {
     return await this.playlistRepository.update(idPlaylist, playlist);
   }
 
-  async delete(id): Promise<DeleteResult> {
-    const searchPlaylist = await this.playlistRepository.findOne(id);
-    //!!playlist mean playlist was empty
-    if (!!!searchPlaylist) {
-      //   console.log('throw new HttpException');
+  async delete(idUser: number, idPlaylist: number): Promise<DeleteResult> {
+    const isExist = await this.checkPlaylistExist(idPlaylist);
+    console.log(isExist);
+    if (isExist) {
       throw new HttpException("Playlist doesn't exist", HttpStatus.BAD_REQUEST);
     }
 
-    return await this.playlistRepository.delete(parseInt(id));
+    const isEditable = await this.checkPrivilege(idUser, idPlaylist);
+    if (!isEditable) {
+      throw new HttpException(
+        "You don't have previllage to edit this playlist",
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return await this.playlistRepository.delete(idPlaylist);
   }
 
   async addPlayList(idPlaylist: number, idPodcast: number): Promise<any> {

@@ -6,6 +6,7 @@ import { User } from '../../../User/entities/User';
 import { UserRepository } from '../../../User/repositories';
 import { Podcast } from '../../../Podcast/entities/Podcast';
 import { HttpException } from '@nestjs/common';
+import { DeleteResult } from 'typeorm';
 
 jest.mock('../../repositories/PlaylistRepository');
 jest.mock('../../../podcast/repositories/PodcastRepository');
@@ -208,6 +209,75 @@ describe('PlaylistService', () => {
         await playlistService.update(idUser, idPlaylist, exampleDataPlaylist);
         done();
       } catch (err) {
+        done('should have success process');
+      }
+    });
+  });
+
+  describe('delete some playlist', () => {
+    let idPlaylist: number = 1;
+    let idUser: number = 1;
+
+    const exampleDataPlaylist = new Playlist();
+    exampleDataPlaylist.id = 1;
+    exampleDataPlaylist.title = 'Morning Vibes';
+
+    const exampleDataUser = new User();
+    exampleDataUser.id = 1;
+    exampleDataUser.username = 'zainal1';
+    exampleDataUser.email = 'zainal1@online-pajak.com';
+    exampleDataUser.playlists = [exampleDataPlaylist];
+
+    it('Should result HttpException if playlist is not exist', async done => {
+      idPlaylist = 2;
+      playlistRepositoryMock.findOne = jest
+        .fn()
+        .mockImplementationOnce(() => null);
+      try {
+        await playlistService.delete(idUser, idPlaylist);
+        done('should have thrown HttpException');
+      } catch (err) {
+        expect(err.message).toBe("Playlist doesn't exist");
+        done();
+      }
+    });
+
+    it("Should result HttpException if user doesn't have privilege", async done => {
+      exampleDataUser.playlists = [];
+      playlistRepositoryMock.findOne = jest
+        .fn()
+        .mockImplementationOnce(() => exampleDataPlaylist);
+      userRepositoryMock.findOne = jest
+        .fn()
+        .mockImplementationOnce(() => exampleDataUser);
+      try {
+        await playlistService.delete(idUser, idPlaylist);
+        done('should have thrown HttpException');
+      } catch (err) {
+        expect(err.message).toBe(
+          "You don't have previllage to edit this playlist",
+        );
+        done();
+      }
+    });
+
+    it('Should result object delete result if delete playlist is success', async done => {
+      idPlaylist = 1;
+      exampleDataUser.playlists = [exampleDataPlaylist];
+      playlistRepositoryMock.findOne = jest
+        .fn()
+        .mockImplementationOnce(() => exampleDataPlaylist);
+      userRepositoryMock.findOne = jest
+        .fn()
+        .mockImplementationOnce(() => exampleDataUser);
+      playlistRepositoryMock.delete = jest
+        .fn()
+        .mockImplementationOnce(() => DeleteResult);
+      try {
+        await playlistService.delete(idUser, idPlaylist);
+        done();
+      } catch (err) {
+        console.log(err);
         done('should have success process');
       }
     });
