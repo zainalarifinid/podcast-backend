@@ -35,6 +35,15 @@ export class PlaylistController {
         return this.playlistService.findAll();
     }
 
+    @Get(":idPlaylist")
+    @ApiOperation({
+        title: 'Get Detail Playlist',
+        description: 'The API to list all playlist'
+    })
+    async getDetailPlaylist(@Param("idPlaylist") idPlaylist: number): Promise<any>{
+        return this.playlistService.getDetail(idPlaylist);
+    }
+
     @Post('detail-from')
     @ApiOperation({
         title: 'Get list Playlist by user',
@@ -51,8 +60,8 @@ export class PlaylistController {
         title: 'Update Playlist',
         description: 'The API to update data playlist'
     })
-    async update(@Req() request: User, @Body() podcast: Playlist): Promise<any>{
-        return this.playlistService.update(request.id, podcast);
+    async update(@Req() request, @Param("id") idPlaylist: number, @Body() playlist: Playlist): Promise<any>{
+        return this.playlistService.update(request.user.id, idPlaylist, playlist);
     }
 
     @Delete(':id')

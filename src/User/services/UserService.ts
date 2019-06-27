@@ -25,12 +25,12 @@ export class UserService{
     }
 
     async getDetail(id: number): Promise<User> {
-        const dataUser = await this.userRepository.findOne({ where : { id: id },  relations: ["podcasts", "playlists", "followers", "followings"] });
+        const dataUser = await this.userRepository.findOne({ where : { id: id },  relations: ["podcasts", "playlists", "followings"] });
         return dataUser;
     }
 
     async searchUser(username: string): Promise<User[]> {
-        const dataUsers = await this.userRepository.find({ where: { username: Like(`%${username}%`) }, relations: ["podcasts", "playlists", "followers", "followings"] })
+        const dataUsers = await this.userRepository.find({ where: { username: Like(`%${username}%`) }, relations: ["podcasts", "playlists", "followings"] })
         return dataUsers;
     }
 

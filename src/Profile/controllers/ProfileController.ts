@@ -5,6 +5,7 @@ import { Follower } from "../entities/Follower.dto";
 import { ApiUseTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { User } from "../../User/entities/User";
 import { UserDto } from "../../User/entities/User.dto";
+import { request } from "http";
 
 @ApiUseTags('Profile')
 @Controller('/api/v1/profile')
@@ -33,7 +34,7 @@ export class ProfileController {
     })
     async getFollower(
         @Param("username") username: string
-    ):Promise<User[]>{
+    ):Promise<any>{
         return this.profileService.getFollower(username);
     }
     
@@ -44,8 +45,22 @@ export class ProfileController {
     })
     async getFollowing(
         @Param("username") username: string
-    ):Promise<User[]>{
+    ):Promise<any>{
         return this.profileService.getFollowing(username);
+    }
+
+    @Get("checkFollowing/:userFollowing")
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @ApiOperation({
+        title: 'Check Status Following',
+        description: 'The API to check status following'
+    })
+    async checkFollowing(
+        @Req() request,
+        @Param("userFollowing") userFollowing: string
+    ):Promise<any> {
+        return this.profileService.checkFollowing(request.user.username, userFollowing);
     }
 
     @Post('follow/:username')

@@ -1,8 +1,8 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { InjectRepository } from "@nestjs/typeorm";
-import { DeleteResult, UpdateResult, Like } from "typeorm";
-import { Podcast } from "../entities/Podcast";
-import { User } from "../../User/entities/User";
+import { InjectRepository } from '@nestjs/typeorm';
+import { DeleteResult, UpdateResult, Like } from 'typeorm';
+import { Podcast } from '../entities/Podcast';
+import { User } from '../../User/entities/User';
 import { PodcastRepository } from '../repositories';
 import { UserRepository } from '../../User/repositories';
 
@@ -18,6 +18,30 @@ export class PodcastService {
 
     async findAll(): Promise<Podcast[]> {
         return await this.podcastRepository.find();
+    }
+
+    async feedPodcast(idUser: number): Promise<any> {
+
+        const dataUser = await this.userRepository.findOne({ where: {id: idUser}, relations: ["followings", "podcasts"] });
+        let resultPodcast = dataUser.podcasts;
+        for(let index = 0; index < dataUser.followings.length; index++){
+            const userPodcast = await this.userRepository.findOne({ where: {id: dataUser.followings[index].id}, relations: ["podcasts"] });
+            // console.log(resultPodcast);
+            // console.log(userPodcast.podcasts);
+            if(userPodcast.podcasts.length > 0){
+                if(resultPodcast.length > 0){
+                    // console.log("Following have feeds", resultPodcast);
+                    resultPodcast = resultPodcast.concat( userPodcast.podcasts );
+                    // console.log( resultPodcast );
+                }else{
+                    resultPodcast = userPodcast.podcasts;
+                    // console.log("Following no have feeds", resultPodcast);
+                }
+            }
+        }
+
+        return resultPodcast;
+
     }
 
     async findDetail(idPodcast: number): Promise<Podcast> {
