@@ -1,10 +1,21 @@
-import { ApiUseTags, ApiOperation } from "@nestjs/swagger";
-import { Controller, Inject, Post, Body, Get, HttpException, HttpStatus } from "@nestjs/common";
+import { ApiUseTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
+import {
+  Controller,
+  Inject,
+  Post,
+  Body,
+  Get,
+  HttpException,
+  HttpStatus,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from "../../User/services/UserService";
 import { User } from "../../User/entities/User";
 import { LoginUserDto } from "../../User/entities/Login.dto";
 import { AuthService } from "../services/AuthService";
 import { VerifyDto } from "../entities/verify.dto";
+import { UserEditDto } from "src/User/entities/UserEdit.dto";
+import { AuthGuard } from "@nestjs/passport";
 
 @ApiUseTags('Auth')
 @Controller('/api/v1/auth')
@@ -26,6 +37,17 @@ export class AuthController {
 
         return this.userService.create(user);
 
+    }
+
+    @Post("update")
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @ApiOperation({
+        title: 'Update Profile data user',
+        description: 'The API to update user data'
+    })
+    async update(@Body() userUpdate: UserEditDto): Promise<any> {
+        return this.userService.updateUser(userUpdate);
     }
 
     @Post("login")
