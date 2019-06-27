@@ -20,12 +20,12 @@ export class ProfileService {
       where: { username: username },
       relations: ['podcasts', 'playlists', 'followings'],
     });
-    if (!!detailUser == false) {
+    if (!!!detailUser) {
       throw new HttpException('account not found', HttpStatus.BAD_REQUEST);
     }
 
-    detailUser['followers'] = await this.getFollower(username);
-    detailUser['followersCount'] = detailUser['followers'].length;
+    detailUser.followers = await this.getFollower(username);
+    detailUser.followersCount = detailUser.followers.length;
 
     return detailUser;
   }

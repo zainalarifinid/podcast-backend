@@ -79,7 +79,7 @@ export class UserService {
     const dataLoginUser = new LoginUserDto();
     dataLoginUser.email = user.email;
     dataLoginUser.password = user.oldPassword ? user.oldPassword : '';
-    console.log(dataLoginUser);
+    // console.log(dataLoginUser);
     if (this.checkPasword(dataLoginUser) || user.password === '') {
       const dataUser = await this.userRepository.findOne({
         select: ['email', 'username', 'password'],
@@ -94,15 +94,15 @@ export class UserService {
       }
 
       dataUser.username = user.username;
-      dataUser.email = user.email; //email using previous email, it can't be changed
+      dataUser.email = user.email; // email using previous email, it can't be changed
 
       if (user.password !== '') {
         const salt = await genSalt(10);
         dataUser.password = await hash(user.password, salt);
       }
 
-      delete(dataUser.followersCount);
-      delete(dataUser.followingCount);
+      delete dataUser.followersCount;
+      delete dataUser.followingCount;
 
       console.log(dataUser);
 

@@ -19,6 +19,32 @@ export class PlaylistService {
     private readonly userRepository: UserRepository,
   ) {}
 
+  async checkPrivilege(idUser: number, idPlaylist: number): Promise<boolean> {
+    const dataUser = await this.userRepository.findOne({
+      where: { id: idUser },
+      relations: ['playlists'],
+    });
+
+    const checkExistPlaylist = dataUser.playlists.filter(
+      data => data.id === idPlaylist,
+    );
+    // console.log( "checkPrivilege", checkExistPlaylist.length > 0 );
+    return checkExistPlaylist.length > 0;
+  }
+
+  async checkPlaylistExist(idPlaylist: number): Promise<boolean> {
+    const searchPlaylist = await this.playlistRepository.findOne(idPlaylist);
+    // !!playlist mean playlist was empty and !!!searchPlaylist mean playlist is exist
+    return !!!searchPlaylist;
+  }
+
+  async checkPlaylistExistByTitle(title: string): Promise<boolean> {
+    const checkTitle = await this.playlistRepository.findOne({
+      title,
+    });
+    return checkTitle !== null;
+  }
+
   async findAll(): Promise<Playlist[]> {
     return await this.playlistRepository.find({
       relations: ['podcasts', 'user'],
@@ -66,21 +92,19 @@ export class PlaylistService {
   }
 
   async create(idUser: number, playlist: Playlist): Promise<any> {
-    playlist.title = playlist.title.length == 0 ? 'Untitled' : playlist.title;
-
-    const checkTitle = await this.playlistRepository.findOne({
-      title: playlist.title,
-    });
-    if (!!checkTitle) {
+    playlist.title = playlist.title.length === 0 ? 'Untitled' : playlist.title;
+    const isAvailable = await this.checkPlaylistExistByTitle(playlist.title);
+    if (isAvailable) {
       throw new HttpException('Title is exist', HttpStatus.BAD_REQUEST);
     }
     const user = await this.userRepository.findOne({
       where: { id: idUser },
       relations: ['playlists'],
     });
+
     const newPlaylist = await this.playlistRepository.save(playlist);
     newPlaylist.user = user;
-    // console.log('check user : ', idUser, user);
+
     if (user.playlists.length > 0) {
       user.playlists.push(newPlaylist);
     } else {
@@ -89,7 +113,7 @@ export class PlaylistService {
 
     await this.userRepository.save(user);
     // console.log(newPlaylist);
-    return { newPlaylist };
+    return newPlaylist;
   }
 
   async update(
@@ -97,25 +121,26 @@ export class PlaylistService {
     idPlaylist: number,
     playlist: Playlist,
   ): Promise<UpdateResult> {
-    const searchPlaylist = await this.playlistRepository.findOne(idPlaylist);
-    //!!playlist mean playlist was empty
-    if (!!!searchPlaylist) {
-    //   console.log('throw new HttpException');
+    if (playlist.title.length === 0) {
+      throw new HttpException(
+        'Title Playlist is empty',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const isExist = await this.checkPlaylistExist(idPlaylist);
+    if (isExist) {
+      //  console.log('throw new HttpException');
       throw new HttpException("Playlist doesn't exist", HttpStatus.BAD_REQUEST);
     }
 
-    // const userPlaylist = await this.userRepository.findOne({ where: { id: idUser }, relations: ["playlists"] });
-
-    // console.log(idUser, idPlaylist, playlist, userPlaylist);
-
-    // if(userPlaylist.playlists && userPlaylist.playlists.length > 0){
-    //     const deleteIndex = userPlaylist.playlists.findIndex(_playlist => _playlist.id == idPlaylist);
-
-    //     if (deleteIndex >= 0) {
-    //         userPlaylist.playlists.splice(deleteIndex, 1);
-    //         await this.userRepository.save(userPlaylist);
-    //     }
-    // }
+    const isEditable = await this.checkPrivilege(idUser, idPlaylist);
+    if (!isEditable) {
+      throw new HttpException(
+        "You don't have previllage to edit this playlist",
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     return await this.playlistRepository.update(idPlaylist, playlist);
   }
@@ -124,7 +149,7 @@ export class PlaylistService {
     const searchPlaylist = await this.playlistRepository.findOne(id);
     //!!playlist mean playlist was empty
     if (!!!searchPlaylist) {
-    //   console.log('throw new HttpException');
+      //   console.log('throw new HttpException');
       throw new HttpException("Playlist doesn't exist", HttpStatus.BAD_REQUEST);
     }
 
