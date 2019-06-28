@@ -71,8 +71,8 @@ export class PlaylistController {
         title: 'Delete Playlist',
         description: 'The API to delete data playlist'
     })
-    async delete(@Param('id') id: number): Promise<any>{
-        return this.playlistService.delete(id);
+    async delete(@Req() request, @Param('id') id: number): Promise<any>{
+        return this.playlistService.delete(request.user.id, id);
     }
 
     @Post(':id/add-playlist/:idPodcast')

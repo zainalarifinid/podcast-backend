@@ -405,7 +405,7 @@ describe('PlaylistService', () => {
                     idPodcast,
                 );
                 expect(playlistRepositoryMock.findOne).toHaveBeenLastCalledWith(
-                  idPlaylist,
+                    idPlaylist,
                 );
                 expect(playlistRepositoryMock.findOne).toHaveReturnedWith(
                     exampleDataPlaylist,
@@ -428,64 +428,70 @@ describe('PlaylistService', () => {
         });
     });
 
-    //   describe('Remove Playlist', () => {
-    //     const exampleDataPlaylist = new Playlist();
-    //     exampleDataPlaylist.title = 'Morning Vibes';
+   /*  describe('Remove Playlist', () => {
+        let idPlaylist: number = 1;
+        const idUser: number = 1;
 
-    //     const idUser: number = 1;
-    //     const exampleDataUser = new User();
-    //     exampleDataUser.id = 1;
-    //     exampleDataUser.username = 'zainal1';
-    //     exampleDataUser.email = 'zainal1@online-pajak.com';
-    //     exampleDataUser.playlists = [exampleDataPlaylist];
+        const exampleDataPlaylist = new Playlist();
+        exampleDataPlaylist.id = 1;
+        exampleDataPlaylist.title = 'Morning Vibes';
 
-    //     const exampleDataPodcast = new Podcast();
-    //     exampleDataPodcast.title = 'Learn Japanese Pod Podcast 01';
-    //     exampleDataPodcast.description = 'Easy learning Japanese.';
-    //     exampleDataPodcast.duration = '23m52s';
-    //     exampleDataPodcast.youtubeLink =
-    //       'https://www.youtube.com/watch?v=siBMCOm83ko';
+        const exampleDataUser = new User();
+        exampleDataUser.id = 1;
+        exampleDataUser.username = 'zainal1';
+        exampleDataUser.email = 'zainal1@online-pajak.com';
+        exampleDataUser.playlists = [exampleDataPlaylist];
 
-    //     exampleDataPlaylist.podcasts = [exampleDataPodcast];
+        let idPodcast: number = 1;
+        const exampleDataPodcast = new Podcast();
+        exampleDataPodcast.title = 'Learn Japanese Pod Podcast 01';
+        exampleDataPodcast.description = 'Easy learning Japanese.';
+        exampleDataPodcast.duration = '23m52s';
+        exampleDataPodcast.youtubeLink =
+            'https://www.youtube.com/watch?v=siBMCOm83ko';
+        exampleDataPlaylist.podcasts = [exampleDataPodcast];
 
-    //     it('Should result HttpException if playlist given not exist', async done => {
-    //       playlistRepositoryMock.findOne.mockResolvedValueOnce(null);
+        it('Should result HttpException if playlist given not exist', async done => {
+            playlistRepositoryMock.findOne = jest
+                .fn()
+                .mockImplementation(() => null);
 
-    //       let idPlaylist: number = 9999;
-    //       let idPodcast: number = 999;
+            try {
+                await playlistService.removePlaylist(idPlaylist, idPodcast);
+                done('should have thrown HttpException');
+            } catch (err) {
+                expect(playlistRepositoryMock.findOne).toHaveBeenCalledWith(
+                    idPlaylist,
+                );
+                expect(err.message).toBe("Playlist doesn't exist");
+                done();
+            }
+        });
 
-    //       try {
-    //         await playlistService.addPlayList(idPlaylist, idPodcast);
-    //         done('should have thrown HttpException');
-    //       } catch (err) {
-    //         // console.log(err);
-    //         expect(playlistRepositoryMock.findOne).toHaveBeenCalledWith(idPlaylist);
-    //         expect(err).toBeInstanceOf(HttpException);
-    //         expect(err.message).toBe("Playlist doesn't exist");
-    //         done();
-    //       }
-    //     });
+        it('Should result HttpException if podcast given not exist', async done => {
+            playlistRepositoryMock.findOne.mockResolvedValueOnce(
+                exampleDataPlaylist as any,
+            );
+            podcastRepositoryMock.findOne.mockResolvedValueOnce(null);
 
-    //     it('Should result HttpException if podcast given not exist', async done => {
-    //       playlistRepositoryMock.findOne.mockResolvedValueOnce(
-    //         exampleDataPlaylist as any,
-    //       );
-    //       podcastRepositoryMock.findOne.mockResolvedValueOnce(null);
+            idPlaylist = 9999;
+            idPodcast = 999;
 
-    //       let idPlaylist: number = 9999;
-    //       let idPodcast: number = 999;
-
-    //       try {
-    //         await playlistService.removePlaylist(idPlaylist, idPodcast);
-    //         done('should have thrown HttpException');
-    //       } catch (err) {
-    //         // console.log(err);
-    //         expect(playlistRepositoryMock.findOne).toHaveBeenCalledWith(idPlaylist);
-    //         expect(podcastRepositoryMock.findOne).toHaveBeenCalledWith(idPodcast);
-    //         expect(err).toBeInstanceOf(HttpException);
-    //         expect(err.message).toBe("Podcast doesn't exist");
-    //         done();
-    //       }
-    //     });
-    //   });
+            try {
+                await playlistService.removePlaylist(idPlaylist, idPodcast);
+                done('should have thrown HttpException');
+            } catch (err) {
+                // console.log(err);
+                expect(playlistRepositoryMock.findOne).toHaveBeenCalledWith(
+                    idPlaylist,
+                );
+                expect(podcastRepositoryMock.findOne).toHaveBeenCalledWith(
+                    idPodcast,
+                );
+                expect(err).toBeInstanceOf(HttpException);
+                expect(err.message).toBe("Podcast doesn't exist");
+                done();
+            }
+        });
+    }); */
 });
